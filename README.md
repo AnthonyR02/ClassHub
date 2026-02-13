@@ -1,5 +1,6 @@
 🎓 ClassHub – Academic Assignment & Deadline Manager
 
+
 📌 Overview
 
 ClassHub is a classroom application designed to help students manage assignments, tests, quizzes, and all academic deadlines in one centralized platform.
