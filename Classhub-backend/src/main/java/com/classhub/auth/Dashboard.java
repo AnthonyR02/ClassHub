@@ -20,7 +20,7 @@ public class Dashboard {
 
         Button logoutBtn = new Button("Logout");
 
-        // 🔁 Go back to login
+        // Go back to login
         logoutBtn.setOnAction(e -> {
             stage.setScene(new LoginPage(stage).getScene());
         });
