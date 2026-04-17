@@ -11,6 +11,5 @@ public class ClassHubApplication extends Application {
         stage.setScene(new LoginPage(stage).getScene());
         stage.setTitle("ClassHub");
         stage.show();
-
     }
 }

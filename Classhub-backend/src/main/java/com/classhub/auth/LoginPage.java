@@ -1,6 +1,5 @@
 package com.classhub.auth;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -13,62 +12,47 @@ public class LoginPage {
 
     public LoginPage(Stage stage) {
 
-        // Title
-        Label title = new Label("ClassHub Login");
-        title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+        Label title = new Label("Login");
 
-        // Username field
         TextField username = new TextField();
         username.setPromptText("Username");
-        username.setMaxWidth(250);
 
-        // Password field
         PasswordField password = new PasswordField();
         password.setPromptText("Password");
-        password.setMaxWidth(250);
 
-        // Login button
         Button loginBtn = new Button("Login");
-        loginBtn.setMaxWidth(250);
+        Button registerBtn = new Button("Register");
 
-        // Register button
-        Button registerBtn = new Button("Go to Register");
-        registerBtn.setMaxWidth(250);
-
-        //LOGIN LOGIC (for now hardcoded)
+        // login logic
         loginBtn.setOnAction(e -> {
             String user = username.getText();
             String pass = password.getText();
 
             if (user.equals("admin") && pass.equals("1234")) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Success");
-                alert.setHeaderText(null);
-                alert.setContentText("Login successful!");
-                alert.show();
+                stage.setScene(new Dashboard(stage).getScene());
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Invalid username or password");
+                alert.setContentText("Invalid login");
                 alert.show();
             }
         });
 
-        // GO TO REGISTER PAGE
+        // go to register page
         registerBtn.setOnAction(e -> {
             stage.setScene(new RegisterPage(stage).getScene());
         });
 
-        // Layout
-        VBox root = new VBox(15);
-        root.setAlignment(Pos.CENTER);
-        root.setPadding(new Insets(30));
+        VBox layout = new VBox(12);
 
-        root.getChildren().addAll(title, username, password, loginBtn, registerBtn);
+        username.setMaxWidth(200);
+        password.setMaxWidth(200);
+        loginBtn.setMaxWidth(120);
+        registerBtn.setMaxWidth(120);
 
-        // Scene
-        scene = new Scene(root, 400, 300);
+        layout.getChildren().addAll(title, username, password, loginBtn, registerBtn);
+        layout.setAlignment(Pos.CENTER);
+
+        scene = new Scene(layout, 300, 200);
     }
 
     public Scene getScene() {
