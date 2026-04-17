@@ -16,4 +16,5 @@ public class Main {
         Event study = cal.addStudySession(today, Duration.ofMinutes(90));
         System.out.println(study); // 8:00-9:30
     }
+    //Last commit forgot to add the right comment changed it so it can generate the automic study time now
 }
