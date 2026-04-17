@@ -1,6 +1,9 @@
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * Event class that is made to make calendar events.
+ */
 public class Event implements Comparable<Event> {
     private final String title;
     private final LocalDateTime start;

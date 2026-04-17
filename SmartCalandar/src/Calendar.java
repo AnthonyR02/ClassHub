@@ -3,8 +3,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * basic calendar class where you can add and remove events
+ */
 public class Calendar {
     private final List<Event> events = new ArrayList<>();
+    private StudyWindow studyWindow = new StudyWindow();
+
+    public Calendar() {}
+
+    public Calendar(StudyWindow studyWindow) {
+        this.studyWindow = studyWindow;
+    }
+
+    public StudyWindow getStudyWindow() { return studyWindow; }
+
+    public void setStudyWindow(StudyWindow studyWindow) {
+        if (studyWindow == null) throw new IllegalArgumentException("Window required");
+        this.studyWindow = studyWindow;
+    }
 
     public void addEvent(Event event) {
         for (Event existing : events) {
