@@ -55,4 +55,5 @@ public class Event implements Comparable<Event> {
     public String toString() {
         return (title + ": " + start + " - " + end);
     }
+
 }
