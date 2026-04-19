@@ -14,3 +14,9 @@ public class Launcher {
 I haven't added any content yet, but I just want to get javafx set up for now since I'm
 having a huge issue with the configuration and version compatibility. Will continue this tomorrow */
 
+
+
+/*
+4/18/2026 [Vince Masong]
+Added a non-functioning login screen for user and pass when login button is pressed.
+ */
