@@ -13,7 +13,9 @@
     <!-- this is the user and pass text boxes -->
     <TextField promptText="Username" maxWidth="200"/>
     <PasswordField promptText="Password" maxWidth="200"/>
-    <Button text="Submit"/>
+
+   <!--Submit button will take the user to the dashboard -->
+    <Button text="Submit" onAction="#goToDashboard"/>
 
     <!-- this is the go back button  -->
     <Button text="Back" onAction="#goBack"/>
