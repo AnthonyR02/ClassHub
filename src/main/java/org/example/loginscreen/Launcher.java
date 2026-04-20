@@ -20,3 +20,10 @@ having a huge issue with the configuration and version compatibility. Will conti
 4/18/2026 [Vince Masong]
 Added a non-functioning login screen for user and pass when login button is pressed.
  */
+
+
+/*
+
+When launched, will launch helloApplication (start screen) in which helloApplication will
+launch helloController when pressed
+ */
