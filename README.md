@@ -14,3 +14,25 @@ ClassHub addresses this issue by bringing all academic tasks into one structured
 How It Works (Preview)
 
 Below, instructions will be provided alongside GIF demonstrations to show how to use the system and navigate key features.
+#  Testing Summary (Prakash Pyakurel)
+
+The application was tested by running the JavaFX interface and interacting with the login system.
+
+### What was tested?
+- Login functionality  
+- Input validation  
+- Navigation between screens  
+
+### Results
+- Valid login (admin / 1234) successfully navigates to the dashboard  
+- Invalid login displays an error message  
+- Application does not crash with incorrect input  
+
+###  Issues Found
+- No validation for empty input fields  
+- Login uses hardcoded credentials (no backend authentication)  
+
+### Note
+This version does not include backend integration. Authentication is handled locally
+
+Yet to test the backend
