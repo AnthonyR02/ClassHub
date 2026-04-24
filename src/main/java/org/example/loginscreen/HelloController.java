@@ -13,7 +13,7 @@ public class HelloController {
     @FXML
 
     //when clicking on the login button, is supposed to take the user to the login screen (user and pass)
-    // as for now, it does not work. I still have to find the issue and make a loginview fxml file
+    // as for now, it does not work. I still have to find the issue and make a login-view fxml file
     public void goToLogin(ActionEvent event) {
         //this gives the button functionality to take the user to the login screen
         try {

@@ -5,7 +5,12 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.Label?>
+<!--
+    Added prefWidth/prefHeight to make hello-view the same size as the other scenes
+-->
 <VBox alignment="CENTER" spacing="20.0"
+
+      prefWidth="600.0" prefHeight="400.0"
       xmlns="http://javafx.com/javafx/8"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.example.loginscreen.HelloController">
