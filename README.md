@@ -16,7 +16,3 @@ How It Works (Preview)
 Below, instructions will be provided alongside GIF demonstrations to show how to use the system and navigate key features.
 
 
-### Note
-This version does not include backend integration. Authentication is handled locally
-
-Yet to test the backend
