@@ -49,7 +49,7 @@ During testing, a 405 Method Not Allowed error was encountered when using an inc
 Conclusion
 All tested APIs are functioning correctly. The backend is successfully integrated with Firebase Firestore, and both data storage and retrieval operations are working as expected. The system supports full interaction between users, courses, and assignments, demonstrating a complete and functional backend workflow.
 
-<img width="468" height="632" alt="image" src="https://github.com/user-attachments/assets/0faf9402-dc7b-4263-9220-2c02aee9536b" />
+
 
 
 <img width="468" height="632" alt="image" src="https://github.com/user-attachments/assets/6b263f0c-1f0a-47cc-95a7-7882421b69ad" />
