@@ -16,7 +16,7 @@ How It Works (Preview)
 Below, instructions will be provided alongside GIF demonstrations to show how to use the system and navigate key features.
 
 
-ClassHub Backend Testing Report by Prakash Pyakurel
+ClassHub Backend Testing Report
 API Testing Summary
 On April 24, 2026, I tested the backend of the ClassHub application using Postman to ensure that all APIs are functioning correctly and that data is properly stored and retrieved from Firebase Firestore. The testing focused on core features such as user authentication, course management, and assignment creation.
  1. User Registration
@@ -48,6 +48,9 @@ An assignment was successfully created and linked to both the user and the cours
 During testing, a 405 Method Not Allowed error was encountered when using an incorrect HTTP method for an endpoint. This issue was resolved by switching to the correct method (GET instead of POST), confirming proper API behavior.
 Conclusion
 All tested APIs are functioning correctly. The backend is successfully integrated with Firebase Firestore, and both data storage and retrieval operations are working as expected. The system supports full interaction between users, courses, and assignments, demonstrating a complete and functional backend workflow.
+
+<img width="468" height="632" alt="image" src="https://github.com/user-attachments/assets/0faf9402-dc7b-4263-9220-2c02aee9536b" />
+
 
 <img width="468" height="632" alt="image" src="https://github.com/user-attachments/assets/6b263f0c-1f0a-47cc-95a7-7882421b69ad" />
 <img width="2048" height="1430" alt="image" src="https://github.com/user-attachments/assets/591daeeb-1035-4f69-9a5d-232d684a0697" />
