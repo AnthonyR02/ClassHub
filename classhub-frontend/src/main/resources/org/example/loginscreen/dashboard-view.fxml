@@ -4,11 +4,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+
+
+
 <VBox spacing="20.0"
       alignment="TOP_LEFT"
       prefWidth="600.0" prefHeight="400.0"
       xmlns="http://javafx.com/javafx/8"
-      xmlns:fx="http://javafx.com/fxml/1">
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.loginscreen.DashboardController">
 
     <!-- Padding so that it is not glued to the edge -->
     <padding>
@@ -55,6 +59,9 @@
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Button text="Add Course"/>
         <Button text="Add Task"/>
+        <Button text="Toggle Dark Mode" onAction="#toggleDarkMode"/>
+
     </HBox>
+
 
 </VBox>
