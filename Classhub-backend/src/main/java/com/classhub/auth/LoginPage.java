@@ -1,5 +1,6 @@
 package com.classhub.auth;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -12,47 +13,57 @@ public class LoginPage {
 
     public LoginPage(Stage stage) {
 
-        Label title = new Label("Login");
+        Label title = new Label("ClassHub");
 
-        TextField username = new TextField();
-        username.setPromptText("Username");
+        TextField emailField = new TextField();
+        emailField.setPromptText("Email");
 
-        PasswordField password = new PasswordField();
-        password.setPromptText("Password");
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText("Password");
 
         Button loginBtn = new Button("Login");
-        Button registerBtn = new Button("Register");
+        Hyperlink createAccountLink = new Hyperlink("Create Account");
+
+        // error label
+        Label errorLabel = new Label("");
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
 
         // login logic
         loginBtn.setOnAction(e -> {
-            String user = username.getText();
-            String pass = password.getText();
+            String email = emailField.getText().trim();
+            String pass  = passwordField.getText().trim();
 
-            if (user.equals("admin") && pass.equals("1234")) {
-                stage.setScene(new Dashboard(stage).getScene());
-            } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("Invalid login");
-                alert.show();
+            if (email.isEmpty() || pass.isEmpty()) {
+                errorLabel.setText("Please fill in all fields.");
+                errorLabel.setVisible(true);
+                errorLabel.setManaged(true);
+                return;
             }
+
+            // show success
+            errorLabel.setVisible(false);
+            errorLabel.setManaged(false);
+            stage.setScene(new Dashboard(stage).getScene());
         });
 
         // go to register page
-        registerBtn.setOnAction(e -> {
+        createAccountLink.setOnAction(e -> {
             stage.setScene(new RegisterPage(stage).getScene());
         });
 
         VBox layout = new VBox(12);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(40));
 
-        username.setMaxWidth(200);
-        password.setMaxWidth(200);
-        loginBtn.setMaxWidth(120);
-        registerBtn.setMaxWidth(120);
+        emailField.setMaxWidth(200);
+        passwordField.setMaxWidth(200);
+        loginBtn.setMaxWidth(200);
 
-        layout.getChildren().addAll(title, username, password, loginBtn, registerBtn);
+        layout.getChildren().addAll(title, emailField, passwordField, loginBtn, createAccountLink, errorLabel);
         layout.setAlignment(Pos.CENTER);
 
-        scene = new Scene(layout, 300, 200);
+        scene = new Scene(layout, 900, 600);
     }
 
     public Scene getScene() {
