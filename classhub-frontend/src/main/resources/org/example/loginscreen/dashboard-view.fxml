@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+
+
+<VBox spacing="20.0"
+      alignment="TOP_LEFT"
+      prefWidth="600.0" prefHeight="400.0"
+      xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.loginscreen.DashboardController">
+
+    <!-- Padding so that it is not glued to the edge -->
+    <padding>
+        <Insets top="20" left="20"/>
+    </padding>
+
+    <!-- Welcome text (add user's name on the next update)-->
+    <Label text="Welcome, User" style="-fx-font-size: 18px;"/>
+
+    <!-- gridboxes template (fix sizing issue next update) -->
+    <GridPane hgap="20" vgap="20" alignment="TOP_LEFT">
+        <!--GPA bar -->
+        <VBox spacing="5"
+              style="-fx-border-color: black; -fx-padding: 10;"
+              GridPane.rowIndex="0" GridPane.columnIndex="0">
+            <Label text="GPA"/>
+            <Label text="3.8"/>
+        </VBox>
+        <!--Courses bar-->
+        <VBox spacing="5"
+              style="-fx-border-color: black; -fx-padding: 10;"
+              GridPane.rowIndex="0" GridPane.columnIndex="1">
+            <Label text="Courses"/>
+            <Label text="5 Active"/>
+        </VBox>
+        <!--Assignments bar -->
+        <VBox spacing="5"
+              style="-fx-border-color: black; -fx-padding: 10;"
+              GridPane.rowIndex="0" GridPane.columnIndex="2">
+            <Label text="Assignments"/>
+            <Label text="12 Due"/>
+        </VBox>
+        <!--Overdue tasks bar -->
+        <VBox spacing="5"
+              style="-fx-border-color: black; -fx-padding: 10;"
+              GridPane.rowIndex="0" GridPane.columnIndex="3">
+            <Label text="Overdue Tasks"/>
+            <Label text="2 Tasks"/>
+        </VBox>
+
+    </GridPane>
+
+    <!-- add course and task buttons -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="Add Course"/>
+        <Button text="Add Task"/>
+        <Button text="Toggle Dark Mode" onAction="#toggleDarkMode"/>
+
+    </HBox>
+
+
+</VBox>
