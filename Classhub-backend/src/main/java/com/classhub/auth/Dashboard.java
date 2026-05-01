@@ -125,6 +125,7 @@ public class Dashboard {
         VBox content = new VBox(16);
         content.setPadding(new Insets(20));
         content.setStyle("-fx-background-color:" + BG + ";");
+        content.getChildren().add(buildStatRow());
 
         ScrollPane scroll = new ScrollPane(content);
         scroll.setStyle("-fx-background-color:transparent;-fx-background:" + BG + ";");
@@ -156,6 +157,36 @@ public class Dashboard {
                 "-fx-background-radius:8;-fx-border-color:transparent;-fx-border-width:1;-fx-border-radius:8;"
         );
         return l;
+    }
+
+    private HBox buildStatRow() {
+        HBox row = new HBox(12);
+        VBox c1 = statCard("GPA",           "3.8", "#6c8ef5");
+        VBox c2 = statCard("Pending Tasks", "6",   "#f5697b");
+        VBox c3 = statCard("Avg Grade",     "86%", "#3ecfb0");
+        VBox c4 = statCard("Attendance",    "91%", "#f5a623");
+        for (VBox c : new VBox[]{c1, c2, c3, c4}) {
+            HBox.setHgrow(c, Priority.ALWAYS);
+            c.setMaxWidth(Double.MAX_VALUE);
+        }
+        row.getChildren().addAll(c1, c2, c3, c4);
+        return row;
+    }
+
+    private VBox statCard(String label, String value, String color) {
+        VBox card = new VBox(6);
+        card.setPadding(new Insets(14, 16, 14, 16));
+        card.setStyle(
+                "-fx-background-color:" + SURFACE + ";" +
+                        "-fx-border-color:" + BORDER + ";" +
+                        "-fx-border-width:1;-fx-border-radius:12;-fx-background-radius:12;"
+        );
+        Label lbl = new Label(label);
+        lbl.setStyle("-fx-font-size:11px;-fx-font-family:'Segoe UI';-fx-text-fill:" + TEXT3 + ";");
+        Label val = new Label(value);
+        val.setStyle("-fx-font-size:26px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:" + color + ";");
+        card.getChildren().addAll(lbl, val);
+        return card;
     }
 
     public Scene getScene() {
