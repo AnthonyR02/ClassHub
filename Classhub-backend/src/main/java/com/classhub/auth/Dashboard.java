@@ -59,9 +59,48 @@ public class Dashboard {
         nav.getChildren().add(navItem("Notes",          false));
 
         // placeholder footer
-        VBox footer = new VBox();
-        footer.setMinHeight(60);
+        VBox footer = new VBox(8);
+        footer.setPadding(new Insets(12));
         footer.setStyle("-fx-border-color:" + BORDER + ";-fx-border-width:1 0 0 0;");
+
+        HBox userRow = new HBox(8);
+        userRow.setAlignment(Pos.CENTER_LEFT);
+        Label initials = new Label("MF");
+        initials.setMinWidth(32); initials.setMinHeight(32);
+        initials.setMaxWidth(32); initials.setMaxHeight(32);
+        initials.setAlignment(Pos.CENTER);
+        initials.setStyle(
+                "-fx-background-color:rgba(108,142,245,0.2);-fx-text-fill:" + ACCENT + ";" +
+                        "-fx-font-size:11px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-background-radius:50;"
+        );
+        VBox userInfo = new VBox(1);
+        Label userName = new Label("Myles Freelin");
+        userName.setStyle("-fx-font-size:12px;-fx-font-weight:600;-fx-font-family:'Segoe UI';-fx-text-fill:" + TEXT + ";");
+        Label userRole = new Label("Student");
+        userRole.setStyle("-fx-font-size:10px;-fx-font-family:'Segoe UI';-fx-text-fill:" + TEXT3 + ";");
+        userInfo.getChildren().addAll(userName, userRole);
+        userRow.getChildren().addAll(initials, userInfo);
+
+        Button settingsBtn = new Button("Settings");
+        settingsBtn.setMaxWidth(Double.MAX_VALUE);
+        settingsBtn.setStyle(
+                "-fx-background-color:" + SURFACE2 + ";-fx-text-fill:" + TEXT2 + ";" +
+                        "-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-background-radius:8;" +
+                        "-fx-padding:7 12 7 12;-fx-cursor:hand;" +
+                        "-fx-border-color:" + BORDER + ";-fx-border-width:1;-fx-border-radius:8;"
+        );
+
+        Button logoutBtn = new Button("Logout");
+        logoutBtn.setMaxWidth(Double.MAX_VALUE);
+        logoutBtn.setStyle(
+                "-fx-background-color:rgba(245,105,123,0.1);-fx-text-fill:" + ROSE + ";" +
+                        "-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-background-radius:8;" +
+                        "-fx-padding:7 12 7 12;-fx-cursor:hand;" +
+                        "-fx-border-color:rgba(245,105,123,0.2);-fx-border-width:1;-fx-border-radius:8;"
+        );
+        logoutBtn.setOnAction(e -> stage.setScene(new LoginPage(stage).getScene()));
+
+        footer.getChildren().addAll(userRow, settingsBtn, logoutBtn);
 
         sidebar.getChildren().addAll(logo, nav, footer);
         return sidebar;
