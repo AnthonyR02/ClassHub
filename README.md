@@ -29,10 +29,3 @@ I ran both the backend and frontend at the same time and tested the following:
 <img width="606" height="711" alt="Screenshot 2026-05-01 at 8 53 01 PM" src="https://github.com/user-attachments/assets/d96445af-ed4c-4ee8-b433-058ee240fbb2" />
 
 
-**Start the backend first:**
-cd classhub-firebase
-mvn spring-boot:run
-
-**Then launch the frontend:**
-cd classhub-frontend
-mvn clean javafx:run
