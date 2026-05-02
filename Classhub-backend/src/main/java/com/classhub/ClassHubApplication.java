@@ -12,4 +12,9 @@ public class ClassHubApplication extends Application {
         stage.setTitle("ClassHub");
         stage.show();
     }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
 }
