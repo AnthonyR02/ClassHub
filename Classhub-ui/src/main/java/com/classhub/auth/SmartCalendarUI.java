@@ -96,7 +96,39 @@ public class SmartCalendarUI {
         title.setStyle("-fx-font-size:15px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:#e8eaf2;");
         topbar.getChildren().add(title);
 
-        main.getChildren().add(topbar);
+        VBox content = new VBox(16);
+        content.setPadding(new Insets(20));
+        content.setStyle("-fx-background-color:#0f1117;");
+
+        HBox monthRow = new HBox(12);
+        monthRow.setAlignment(Pos.CENTER_LEFT);
+
+        Button prevBtn = new Button("←");
+        prevBtn.setStyle("-fx-background-color:#1f2436;-fx-text-fill:#9097b4;-fx-font-size:13px;-fx-font-family:'Segoe UI';-fx-background-radius:8;-fx-padding:6 10 6 10;-fx-cursor:hand;-fx-border-color:#ffffff12;-fx-border-width:1;-fx-border-radius:8;");
+
+        Label monthLabel = new Label("April 2026");
+        monthLabel.setStyle("-fx-font-size:15px;-fx-font-weight:500;-fx-font-family:'Segoe UI';-fx-text-fill:#e8eaf2;");
+
+        Button nextBtn = new Button("→");
+        nextBtn.setStyle("-fx-background-color:#1f2436;-fx-text-fill:#9097b4;-fx-font-size:13px;-fx-font-family:'Segoe UI';-fx-background-radius:8;-fx-padding:6 10 6 10;-fx-cursor:hand;-fx-border-color:#ffffff12;-fx-border-width:1;-fx-border-radius:8;");
+
+        Button todayBtn = new Button("Today");
+        todayBtn.setStyle("-fx-background-color:rgba(108,142,245,0.12);-fx-text-fill:#6c8ef5;-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-background-radius:8;-fx-padding:7 14 7 14;-fx-cursor:hand;-fx-border-color:rgba(108,142,245,0.2);-fx-border-width:1;-fx-border-radius:8;");
+
+        HBox spacer = new HBox();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        monthRow.getChildren().addAll(prevBtn, monthLabel, nextBtn, spacer, todayBtn);
+
+        content.getChildren().add(monthRow);
+
+        ScrollPane scroll = new ScrollPane(content);
+        scroll.setStyle("-fx-background-color:transparent;-fx-background:#0f1117;");
+        scroll.setFitToWidth(true);
+        scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scroll.setBorder(Border.EMPTY);
+        VBox.setVgrow(scroll, Priority.ALWAYS);
+
+        main.getChildren().addAll(topbar, scroll);
         return main;
     }
 
