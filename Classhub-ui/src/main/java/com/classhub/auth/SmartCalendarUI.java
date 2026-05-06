@@ -10,6 +10,12 @@ public class SmartCalendarUI {
 
     private Scene scene;
 
+    private static final int TODAY         = 15;
+    private static final int START_DAY     = 3;
+    private static final int DAYS_IN_MONTH = 30;
+    private static final int[] PREV_DAYS   = {29, 30, 31};
+    private static final int[] NEXT_DAYS   = {1, 2};
+
     public SmartCalendarUI(Stage stage) {
         HBox root = new HBox(0);
         root.setStyle("-fx-background-color:#0f1117;");
@@ -121,6 +127,56 @@ public class SmartCalendarUI {
 
         content.getChildren().add(monthRow);
 
+        // calendar outer card
+        VBox calOuter = new VBox(0);
+        calOuter.setStyle("-fx-background-color:#181c27;-fx-border-color:#ffffff12;-fx-border-width:1;-fx-border-radius:12;-fx-background-radius:12;");
+        VBox.setVgrow(calOuter, Priority.ALWAYS);
+
+// day headers
+        HBox dayHeaders = new HBox(0);
+        String[] days = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
+        for (String d : days) {
+            Label lbl = new Label(d);
+            lbl.setMaxWidth(Double.MAX_VALUE);
+            lbl.setAlignment(Pos.CENTER);
+            lbl.setStyle("-fx-font-size:11px;-fx-font-weight:500;-fx-font-family:'Segoe UI';-fx-text-fill:#5e6482;-fx-border-color:#ffffff12;-fx-border-width:0 0 1 0;-fx-padding:10 0 10 0;");
+            HBox.setHgrow(lbl, Priority.ALWAYS);
+            dayHeaders.getChildren().add(lbl);
+        }
+        calOuter.getChildren().add(dayHeaders);
+
+// grid
+        GridPane grid = new GridPane();
+        grid.setMaxWidth(Double.MAX_VALUE);
+        grid.setMaxHeight(Double.MAX_VALUE);
+        VBox.setVgrow(grid, Priority.ALWAYS);
+
+        for (int c = 0; c < 7; c++) {
+            ColumnConstraints cc = new ColumnConstraints();
+            cc.setPercentWidth(100.0 / 7);
+            grid.getColumnConstraints().add(cc);
+        }
+        for (int r = 0; r < 5; r++) {
+            RowConstraints rc = new RowConstraints();
+            rc.setMinHeight(72);
+            grid.getRowConstraints().add(rc);
+        }
+
+        int col = 0, row = 0;
+        for (int pd : PREV_DAYS) {
+            grid.add(buildCell(pd, false, true), col++, row);
+        }
+        for (int d = 1; d <= DAYS_IN_MONTH; d++) {
+            grid.add(buildCell(d, d == TODAY, false), col, row);
+            col++;
+            if (col == 7) { col = 0; row++; }
+        }
+        for (int nd : NEXT_DAYS) {
+            grid.add(buildCell(nd, false, true), col++, row);
+        }
+        calOuter.getChildren().add(grid);
+        content.getChildren().add(calOuter);
+
         ScrollPane scroll = new ScrollPane(content);
         scroll.setStyle("-fx-background-color:transparent;-fx-background:#0f1117;");
         scroll.setFitToWidth(true);
@@ -141,6 +197,27 @@ public class SmartCalendarUI {
                 : "-fx-background-color:transparent;-fx-text-fill:#9097b4;-fx-font-size:13px;-fx-font-family:'Segoe UI';-fx-background-radius:8;-fx-border-color:transparent;-fx-border-width:1;-fx-border-radius:8;"
         );
         return l;
+    }
+    private VBox buildCell(int day, boolean isToday, boolean muted) {
+        VBox cell = new VBox(4);
+        cell.setPadding(new Insets(8));
+        cell.setStyle(
+                (isToday ? "-fx-background-color:rgba(108,142,245,0.06);" : "-fx-background-color:transparent;") +
+                        "-fx-border-color:rgba(255,255,255,0.05);-fx-border-width:0 1 1 0;"
+        );
+
+        Label num = new Label(String.valueOf(day));
+        num.setStyle("-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-text-fill:" +
+                (muted ? "#5e6482;" : isToday ? "#6c8ef5;-fx-font-weight:500;" : "#e8eaf2;"));
+        cell.getChildren().add(num);
+
+        if (isToday) {
+            Region bar = new Region();
+            bar.setPrefWidth(18); bar.setPrefHeight(3);
+            bar.setStyle("-fx-background-color:#6c8ef5;-fx-background-radius:2;");
+            cell.getChildren().add(bar);
+        }
+        return cell;
     }
 
     public Scene getScene() { return scene; }
