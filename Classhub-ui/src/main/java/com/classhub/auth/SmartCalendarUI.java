@@ -15,6 +15,18 @@ public class SmartCalendarUI {
     private static final int DAYS_IN_MONTH = 30;
     private static final int[] PREV_DAYS   = {29, 30, 31};
     private static final int[] NEXT_DAYS   = {1, 2};
+    private VBox popup;
+
+    private static final java.util.Map<Integer, java.util.List<String>> EVENTS = new java.util.HashMap<>();
+    static {
+        EVENTS.put(2, java.util.Arrays.asList("CS HW"));
+        EVENTS.put(3, java.util.Arrays.asList("CS HW", "CS HW"));
+        EVENTS.put(5, java.util.Arrays.asList("CS HW", "CS HW", "CS HW"));
+        EVENTS.put(8, java.util.Arrays.asList("CS HW"));
+        EVENTS.put(10, java.util.Arrays.asList("CS HW", "CS HW"));
+        EVENTS.put(22, java.util.Arrays.asList("CS HW", "CS HW"));
+        EVENTS.put(30, java.util.Arrays.asList("CS HW"));
+    }
 
     public SmartCalendarUI(Stage stage) {
         HBox root = new HBox(0);
@@ -127,6 +139,11 @@ public class SmartCalendarUI {
 
         content.getChildren().add(monthRow);
 
+        // declare contentStack here so the grid loop can reference it
+        StackPane contentStack = new StackPane();
+        VBox.setVgrow(contentStack, Priority.ALWAYS);
+        contentStack.setOnMouseClicked(e -> { if (popup != null) popup.setVisible(false); });
+
         // calendar outer card
         VBox calOuter = new VBox(0);
         calOuter.setStyle("-fx-background-color:#181c27;-fx-border-color:#ffffff12;-fx-border-width:1;-fx-border-radius:12;-fx-background-radius:12;");
@@ -166,10 +183,29 @@ public class SmartCalendarUI {
         for (int pd : PREV_DAYS) {
             grid.add(buildCell(pd, false, true), col++, row);
         }
-        for (int d = 1; d <= DAYS_IN_MONTH; d++) {
-            grid.add(buildCell(d, d == TODAY, false), col, row);
-            col++;
-            if (col == 7) { col = 0; row++; }
+            for (int d = 1; d <= DAYS_IN_MONTH; d++) {
+                VBox cell = buildCell(d, d == TODAY, false);
+                java.util.List<String> evts = EVENTS.getOrDefault(d, java.util.Collections.emptyList());
+
+                if (evts.size() == 1) {
+                    Label pill = new Label(evts.get(0));
+                    pill.setMaxWidth(Double.MAX_VALUE);
+                    pill.setStyle("-fx-background-color:rgba(245,105,123,0.15);-fx-text-fill:#f5697b;-fx-font-size:10px;-fx-font-family:'Segoe UI';-fx-background-radius:4;-fx-padding:2 6 2 6;");
+                    cell.getChildren().add(pill);
+                } else if (evts.size() > 1) {
+                    Label pill = new Label(evts.size() + " events");
+                    pill.setMaxWidth(Double.MAX_VALUE);
+                    pill.setStyle("-fx-background-color:rgba(108,142,245,0.15);-fx-text-fill:#6c8ef5;-fx-font-size:10px;-fx-font-family:'Segoe UI';-fx-background-radius:4;-fx-padding:2 6 2 6;");
+                    cell.getChildren().add(pill);
+                }
+                if (!evts.isEmpty()) {
+                    final int day = d;
+                    final java.util.List<String> events = evts;
+                    cell.setOnMouseClicked(e -> showPopup(contentStack, "April " + day, events));
+                }
+                grid.add(cell, col, row);
+                col++;
+                if (col == 7) { col = 0; row++; }
         }
         for (int nd : NEXT_DAYS) {
             grid.add(buildCell(nd, false, true), col++, row);
@@ -177,15 +213,17 @@ public class SmartCalendarUI {
         calOuter.getChildren().add(grid);
         content.getChildren().add(calOuter);
 
-        ScrollPane scroll = new ScrollPane(content);
-        scroll.setStyle("-fx-background-color:transparent;-fx-background:#0f1117;");
-        scroll.setFitToWidth(true);
-        scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scroll.setBorder(Border.EMPTY);
-        VBox.setVgrow(scroll, Priority.ALWAYS);
+            ScrollPane scroll = new ScrollPane(content);
+            scroll.setStyle("-fx-background-color:transparent;-fx-background:#0f1117;");
+            scroll.setFitToWidth(true);
+            scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            scroll.setBorder(Border.EMPTY);
+            VBox.setVgrow(scroll, Priority.ALWAYS);
 
-        main.getChildren().addAll(topbar, scroll);
-        return main;
+        contentStack.getChildren().add(scroll);
+
+            main.getChildren().addAll(topbar, contentStack);
+            return main;
     }
 
     private Label navItem(String text, boolean active) {
@@ -219,6 +257,33 @@ public class SmartCalendarUI {
         }
         return cell;
     }
+        private void showPopup(StackPane stack, String dateLabel, java.util.List<String> events) {
+            if (popup != null) stack.getChildren().remove(popup);
+
+            popup = new VBox(8);
+            popup.setStyle("-fx-background-color:#1f2436;-fx-border-color:rgba(108,142,245,0.3);-fx-border-width:1;-fx-border-radius:10;-fx-background-radius:10;-fx-padding:14 16 14 16;");
+            popup.setMaxWidth(220);
+            StackPane.setAlignment(popup, Pos.CENTER);
+
+            HBox header = new HBox();
+            header.setAlignment(Pos.CENTER_LEFT);
+            Label date = new Label(dateLabel);
+            date.setStyle("-fx-font-size:12px;-fx-font-weight:500;-fx-font-family:'Segoe UI';-fx-text-fill:#9097b4;");
+            HBox sp = new HBox(); HBox.setHgrow(sp, Priority.ALWAYS);
+            Button close = new Button("close");
+            close.setStyle("-fx-background-color:transparent;-fx-text-fill:#5e6482;-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-border-color:transparent;-fx-cursor:hand;-fx-padding:0;");
+            close.setOnAction(e -> popup.setVisible(false));
+            header.getChildren().addAll(date, sp, close);
+            popup.getChildren().add(header);
+
+            for (String evt : events) {
+                Label item = new Label(evt);
+                item.setMaxWidth(Double.MAX_VALUE);
+                item.setStyle("-fx-background-color:rgba(245,105,123,0.15);-fx-text-fill:#f5697b;-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-background-radius:6;-fx-padding:5 10 5 10;");
+                popup.getChildren().add(item);
+            }
+            stack.getChildren().add(popup);
+        }
 
     public Scene getScene() { return scene; }
 }
