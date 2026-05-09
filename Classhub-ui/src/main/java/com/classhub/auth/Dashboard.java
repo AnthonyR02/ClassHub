@@ -61,7 +61,9 @@ public class Dashboard {
         VBox.setVgrow(nav, Priority.ALWAYS);
         nav.getChildren().add(navSection("MAIN"));
         nav.getChildren().add(navItem("Dashboard",      true));
-        nav.getChildren().add(navItem("Smart Calendar", false));
+        Label calItem = navItem("Smart Calendar", false);
+        calItem.setOnMouseClicked(e -> stage.setScene(new SmartCalendarUI(stage).getScene()));
+        nav.getChildren().add(calItem);
         nav.getChildren().add(navItem("Assignments",    false));
         nav.getChildren().add(navItem("Grades",         false));
         nav.getChildren().add(navItem("Notes",          false));
