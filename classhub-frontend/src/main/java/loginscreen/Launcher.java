@@ -1,4 +1,4 @@
-package org.example.loginscreen;
+package loginscreen;
 
 import javafx.application.Application;
 

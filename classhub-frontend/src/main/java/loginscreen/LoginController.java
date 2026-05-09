@@ -1,4 +1,4 @@
-package org.example.loginscreen;
+package loginscreen;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,7 +26,7 @@ public class LoginController {
 
     public void goBack(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../resources/hello-view.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -58,7 +58,7 @@ public class LoginController {
 
 
         if(response.statusCode() == 200) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../resources/dashboard-view.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

@@ -10,7 +10,7 @@
       prefWidth="600.0" prefHeight="400.0"
       xmlns="http://javafx.com/javafx/8"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.example.loginscreen.LoginController">
+      fx:controller="loginscreen.LoginController">
     <!-- this is the user and pass text boxes -->
     <TextField fx:id="usernameField" promptText="Email" maxWidth="200"/>
     <PasswordField fx:id="passwordField" promptText="Password" maxWidth="200"/>

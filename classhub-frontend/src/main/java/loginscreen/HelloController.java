@@ -1,4 +1,4 @@
-package org.example.loginscreen;
+package loginscreen;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,7 +17,7 @@ public class HelloController {
     public void goToLogin(ActionEvent event) {
         //this gives the button functionality to take the user to the login screen
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("login-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
