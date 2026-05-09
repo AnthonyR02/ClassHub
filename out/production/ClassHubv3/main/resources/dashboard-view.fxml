@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="main.java.loginscreen.DashboardController">
+
+    <!-- ================= TOP SECTION ================= -->
+    <top>
+        <VBox spacing="15">
+            <padding>
+                <Insets top="20" left="20" right="20" bottom="10"/>
+            </padding>
+
+            <!-- Welcome -->
+            <Label text="Welcome, User"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+            <!-- Cards + Profile -->
+            <HBox spacing="20">
+
+                <!-- Cards -->
+                <HBox spacing="15">
+
+                    <VBox style="-fx-border-color: black; -fx-padding: 10;">
+                        <Label text="GPA"/>
+                        <Label text="3.8"/>
+                    </VBox>
+
+                    <VBox style="-fx-border-color: black; -fx-padding: 10;">
+                        <Label text="Courses"/>
+                        <Label text="5 Active"/>
+                    </VBox>
+
+                    <VBox style="-fx-border-color: black; -fx-padding: 10;">
+                        <Label text="Assignments"/>
+                        <Label text="12 Due"/>
+                    </VBox>
+
+                    <VBox style="-fx-border-color: black; -fx-padding: 10;">
+                        <Label text="Overdue Tasks"/>
+                        <Label text="2 Tasks"/>
+                    </VBox>
+
+                </HBox>
+
+                <!-- Profile Panel -->
+                <VBox style="-fx-border-color: black; -fx-padding: 20;"
+                      prefWidth="120">
+                    <Label text="Profile"/>
+                </VBox>
+
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- ================= LEFT SIDEBAR ================= -->
+    <left>
+        <VBox spacing="10" prefWidth="150">
+            <padding>
+                <Insets top="10" left="10" right="10" bottom="10"/>
+            </padding>
+
+            <Button text="Add Task" onAction="#showAddTask"/>
+            <Button text="Add Course" onAction="#showAddCourse"/>
+            <Button text="Tutor"/>
+            <Button text="Flashcard Maker"/>
+            <Button text="Grades Calculator"/>
+            <Button text="Toggle Dark Mode" onAction="#toggleDarkMode"/>
+
+            <!-- Spacer pushes logout down -->
+            <VBox VBox.vgrow="ALWAYS"/>
+
+            <Button text="Logout"/>
+        </VBox>
+    </left>
+
+    <!-- ================= CENTER CONTENT ================= -->
+    <center>
+        <VBox spacing="15">
+            <padding>
+                <Insets top="20" left="20" right="20" bottom="20"/>
+            </padding>
+
+            <!-- Title -->
+            <Label fx:id="sectionTitle"
+                   text="Dashboard"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+            <!-- Dynamic content goes here -->
+            <StackPane fx:id="contentArea"
+                       style="-fx-border-color: black;"
+                       prefHeight="400"/>
+        </VBox>
+    </center>
+
+</BorderPane>
