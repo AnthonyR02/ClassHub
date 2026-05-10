@@ -2,82 +2,113 @@ package loginscreen;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public class DashboardController {
 
-    // ===== UI ELEMENTS FROM FXML =====
-    @FXML
-    private Label sectionTitle;
+    @FXML private Label sectionTitle;
+    @FXML private StackPane contentArea;
+    @FXML private Label userNameLabel;
 
     @FXML
-    private StackPane contentArea;
-
-    // ===== DARK MODE STATE =====
-    private boolean darkMode = false;
-
-    // ===== DARK MODE TOGGLE =====
-    @FXML
-    public void toggleDarkMode(ActionEvent event) {
-        Scene scene = ((Node) event.getSource()).getScene();
-
-        String css = getClass()
-                .getResource("/org/example/loginscreen/dark-theme.css")
-                .toExternalForm();
-
-        if (!darkMode) {
-            scene.getStylesheets().add(css);
-        } else {
-            scene.getStylesheets().remove(css);
+    public void initialize() {
+        // Default view — content area is hidden when dashboard cards are visible
+        if (contentArea != null) {
+            contentArea.setVisible(false);
+            contentArea.setManaged(false);
         }
-
-        darkMode = !darkMode;
     }
 
-    // ===== SHOW ADD TASK VIEW =====
+    @FXML
+    public void showDashboard() {
+        sectionTitle.setText("Dashboard");
+        if (contentArea != null) {
+            contentArea.setVisible(false);
+            contentArea.setManaged(false);
+        }
+    }
+
+    @FXML
+    public void showCalendar() {
+        sectionTitle.setText("Smart Calendar");
+        showPlaceholder("Calendar view coming soon.");
+    }
+
+    @FXML
+    public void showAssignments() {
+        sectionTitle.setText("Assignments");
+        showPlaceholder("Assignments view coming soon.");
+    }
+
+    @FXML
+    public void showGrades() {
+        sectionTitle.setText("Grades");
+        showPlaceholder("Grades view coming soon.");
+    }
+
+    @FXML
+    public void showNotes() {
+        sectionTitle.setText("Notes");
+        showPlaceholder("Notes view coming soon.");
+    }
+
     @FXML
     public void showAddTask() {
         sectionTitle.setText("Add Task");
-
         VBox view = new VBox(10);
-        view.getChildren().addAll(
-                new Label("Task Name"),
-                new TextField(),
-                new Button("Submit")
-        );
-
-        contentArea.getChildren().setAll(view);
+        view.getChildren().addAll(new Label("Task Name"), new TextField(), new Button("Submit"));
+        if (contentArea != null) {
+            contentArea.getChildren().setAll(view);
+            contentArea.setVisible(true);
+            contentArea.setManaged(true);
+        }
     }
 
-    // ===== SHOW ADD COURSE VIEW =====
     @FXML
     public void showAddCourse() {
         sectionTitle.setText("Add Course");
-
         VBox view = new VBox(10);
-        view.getChildren().addAll(
-                new Label("Course Name"),
-                new TextField(),
-                new Button("Add")
-        );
-
-        contentArea.getChildren().setAll(view);
+        view.getChildren().addAll(new Label("Course Name"), new TextField(), new Button("Add"));
+        if (contentArea != null) {
+            contentArea.getChildren().setAll(view);
+            contentArea.setVisible(true);
+            contentArea.setManaged(true);
+        }
     }
 
-    // ===== OPTIONAL: DEFAULT VIEW WHEN LOADED =====
     @FXML
-    public void initialize() {
-        sectionTitle.setText("Dashboard");
+    public void handleLogout(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root, 900, 600);
+            scene.getStylesheets().add(getClass().getResource("/dark-theme.css").toExternalForm());
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-        VBox defaultView = new VBox(10);
-        defaultView.getChildren().add(
-                new Label("Select an option from the sidebar")
-        );
+    // Kept for backwards compat with old FXML
+    @FXML
+    public void toggleDarkMode(ActionEvent event) { /* already dark by default */ }
 
-        contentArea.getChildren().setAll(defaultView);
+    private void showPlaceholder(String message) {
+        if (contentArea == null) return;
+        VBox view = new VBox(10);
+        Label lbl = new Label(message);
+        lbl.setStyle("-fx-text-fill: #8b949e; -fx-font-size: 14px;");
+        view.getChildren().add(lbl);
+        contentArea.getChildren().setAll(view);
+        contentArea.setVisible(true);
+        contentArea.setManaged(true);
     }
 }

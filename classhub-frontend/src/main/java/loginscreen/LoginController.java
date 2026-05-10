@@ -22,30 +22,28 @@ public class LoginController {
     @FXML
     private PasswordField passwordField;
     @FXML
-    private Label errorLabel; // shows error if login fails
+    private Label errorLabel;
 
+    // "Create Account" link — goes back to hello-view (or could open a register screen)
     public void goBack(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../resources/hello-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/hello-view.fxml"));
             Parent root = loader.load();
-
+            Scene scene = new Scene(root, 900, 600);
+            scene.getStylesheets().add(getClass().getResource("/dark-theme.css").toExternalForm());
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-
+            stage.setScene(scene);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //submit button to dashboard
     public void goToDashboard(ActionEvent event) {
         String email = usernameField.getText();
         String password = passwordField.getText();
 
-
         try {
             HttpClient client = HttpClient.newHttpClient();
-
             String body = "{\"email\":\"" + email + "\",\"password\":\"" + password + "\"}";
 
             HttpRequest request = HttpRequest.newBuilder()
@@ -56,20 +54,20 @@ public class LoginController {
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-
-        if(response.statusCode() == 200) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../resources/dashboard-view.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-        } else{
-            errorLabel.setText("Incorrect email or password.");
-        }
+            if (response.statusCode() == 200) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashboard-view.fxml"));
+                Parent root = loader.load();
+                Scene scene = new Scene(root, 900, 600);
+                scene.getStylesheets().add(getClass().getResource("/dark-theme.css").toExternalForm());
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setScene(scene);
+            } else {
+                errorLabel.setText("Incorrect email or password.");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
-            errorLabel.setText("Could not connect to server");
+            errorLabel.setText("Could not connect to server.");
         }
     }
 }
