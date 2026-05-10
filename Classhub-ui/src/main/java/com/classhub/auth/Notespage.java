@@ -5,10 +5,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import java.util.ArrayList;
 
 public class NotesPage {
 
     private Scene scene;
+    // Notes Data
+    private final ArrayList<String[]> notes = new ArrayList<>();
+    private int selectedIndex = -1;
+
+    // UI Components
+    private VBox noteList;
+    private TextArea editor;
+    private TextField titleField;
 
     public NotesPage(Stage stage) {
         HBox root = new HBox(0);
@@ -121,14 +130,15 @@ public class NotesPage {
         return sidebar;
     }
 
-    // ── Notes Panel (EMPTY SHELL ONLY) ───────────────────────
+    // Notes Panel
     private HBox buildNotePanel() {
 
         HBox panel = new HBox(0);
         HBox.setHgrow(panel, Priority.ALWAYS);
 
-        // Left list column (UI only)
+        // Left list column
         VBox listCol = new VBox(0);
+
         listCol.setMinWidth(220);
         listCol.setMaxWidth(220);
 
@@ -138,42 +148,60 @@ public class NotesPage {
                         "-fx-border-width:0 1 0 0;"
         );
 
+        // Header
+        HBox listHeader = new HBox(8);
+        listHeader.setPadding(new Insets(12));
+
         Label notesLabel = new Label("Notes");
-        notesLabel.setPadding(new Insets(12));
         notesLabel.setStyle("-fx-text-fill:#e8eaf2;-fx-font-size:14px;-fx-font-weight:700;");
 
-        ScrollPane listScroll = new ScrollPane();
-        listScroll.setFitToWidth(true);
-        listScroll.setStyle("-fx-background:#181c27;");
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        VBox listPlaceholder = new VBox();
-        listScroll.setContent(listPlaceholder);
+        Button newBtn = new Button("+");
+
+        // NEW NOTE BUTTON
+        newBtn.setOnAction(e -> newNote());
+
+        listHeader.getChildren().addAll(notesLabel, spacer, newBtn);
+
+        // Note list
+        noteList = new VBox(0);
+
+        ScrollPane listScroll = new ScrollPane(noteList);
+        listScroll.setFitToWidth(true);
 
         VBox.setVgrow(listScroll, Priority.ALWAYS);
 
-        listCol.getChildren().addAll(notesLabel, listScroll);
+        listCol.getChildren().addAll(listHeader, listScroll);
 
-        // Right editor column (UI only)
+        // Right editor column
         VBox editorCol = new VBox(0);
-        VBox.setVgrow(editorCol, Priority.ALWAYS);
-
-        editorCol.setStyle("-fx-background-color:#0f1117;");
+        HBox.setHgrow(editorCol, Priority.ALWAYS);
 
         HBox editorHeader = new HBox(10);
         editorHeader.setPadding(new Insets(12));
-        editorHeader.setStyle("-fx-border-color:#ffffff12;-fx-border-width:0 0 1 0;");
 
-        TextField titleField = new TextField();
+        titleField = new TextField();
         titleField.setPromptText("Note title...");
+
         HBox.setHgrow(titleField, Priority.ALWAYS);
 
         Button saveBtn = new Button("Save");
+        saveBtn.setOnAction(e -> saveNote());
+
         Button deleteBtn = new Button("Delete");
+        deleteBtn.setOnAction(e -> deleteNote());
 
-        editorHeader.getChildren().addAll(titleField, saveBtn, deleteBtn);
+        editorHeader.getChildren().addAll(
+                titleField,
+                saveBtn,
+                deleteBtn
+        );
 
-        TextArea editor = new TextArea();
+        editor = new TextArea();
         editor.setPromptText("Start typing your note...");
+
         VBox.setVgrow(editor, Priority.ALWAYS);
 
         editorCol.getChildren().addAll(editorHeader, editor);
@@ -195,6 +223,107 @@ public class NotesPage {
         );
 
         return l;
+    }
+    private void newNote() {
+
+        notes.add(new String[]{"Untitled", ""});
+
+        selectedIndex = notes.size() - 1;
+
+        refreshList();
+
+        titleField.setText("Untitled");
+        editor.setText("");
+    }
+
+    private void saveNote() {
+
+        if (selectedIndex < 0) {
+            return;
+        }
+
+        String title = titleField.getText().isBlank()
+                ? "Untitled"
+                : titleField.getText();
+
+        notes.get(selectedIndex)[0] = title;
+        notes.get(selectedIndex)[1] = editor.getText();
+
+        refreshList();
+    }
+
+    private void deleteNote() {
+
+        if (selectedIndex < 0) {
+            return;
+        }
+
+        notes.remove(selectedIndex);
+
+        if (notes.isEmpty()) {
+
+            selectedIndex = -1;
+
+            titleField.clear();
+            editor.clear();
+
+        } else {
+
+            selectedIndex = 0;
+            loadNote(selectedIndex);
+        }
+
+        refreshList();
+    }
+
+    private void loadNote(int index) {
+
+        selectedIndex = index;
+
+        titleField.setText(notes.get(index)[0]);
+        editor.setText(notes.get(index)[1]);
+
+        refreshList();
+    }
+
+    private void refreshList() {
+
+        noteList.getChildren().clear();
+
+        for (int i = 0; i < notes.size(); i++) {
+
+            final int index = i;
+
+            VBox item = new VBox(2);
+            item.setPadding(new Insets(10));
+
+            item.setStyle(
+                    i == selectedIndex
+                            ? "-fx-background-color:#2a3147;"
+                            : "-fx-background-color:transparent;"
+            );
+
+            Label title = new Label(notes.get(i)[0]);
+            title.setStyle("-fx-text-fill:#e8eaf2;-fx-font-weight:600;");
+
+            String content = notes.get(i)[1];
+
+            Label preview = new Label(
+                    content.isBlank()
+                            ? "No content"
+                            : content.length() > 40
+                            ? content.substring(0, 40) + "..."
+                            : content
+            );
+
+            preview.setStyle("-fx-text-fill:#5e6482;-fx-font-size:11px;");
+
+            item.getChildren().addAll(title, preview);
+
+            item.setOnMouseClicked(e -> loadNote(index));
+
+            noteList.getChildren().add(item);
+        }
     }
 
     public Scene getScene() {
