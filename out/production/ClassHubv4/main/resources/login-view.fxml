@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane
+        prefWidth="900.0" prefHeight="600.0"
+        styleClass="root-pane"
+        xmlns="http://javafx.com/javafx/11"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="main.java.loginscreen.LoginController">
+
+    <VBox alignment="CENTER" styleClass="login-bg">
+
+        <VBox styleClass="login-card" alignment="TOP_LEFT" maxWidth="340" spacing="0">
+            <padding>
+                <Insets top="40" right="40" bottom="40" left="40"/>
+            </padding>
+
+            <Label text="ClassHub" styleClass="login-title"/>
+            <Label text="Sign in to your account" styleClass="login-subtitle"/>
+            <Region prefHeight="20"/>
+
+            <TextField fx:id="usernameField" promptText="Email"
+                       styleClass="login-field" maxWidth="260"/>
+            <Region prefHeight="10"/>
+
+            <PasswordField fx:id="passwordField" promptText="Password"
+                           styleClass="login-field" maxWidth="260"/>
+            <Region prefHeight="4"/>
+
+            <Label fx:id="errorLabel" text="" styleClass="error-label"/>
+            <Region prefHeight="10"/>
+
+            <Button text="Login"
+                    onAction="#goToDashboard"
+                    styleClass="login-button"
+                    maxWidth="260" prefWidth="260"/>
+
+            <Region prefHeight="16"/>
+
+            <Hyperlink text="Create Account"
+                       onAction="#goBack"
+                       styleClass="login-link"/>
+        </VBox>
+    </VBox>
+</StackPane>

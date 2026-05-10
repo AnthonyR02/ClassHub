@@ -1,0 +1,327 @@
+/* ============================================================
+   ClassHub Dark Theme
+   Matches the design in the provided screenshots
+   ============================================================ */
+
+/* ---- GLOBAL ---- */
+.root-pane {
+    -fx-background-color: #0d1117;
+}
+
+/* ---- LOGIN SCREEN ---- */
+.login-bg {
+    -fx-background-color: #0d1117;
+    -fx-alignment: CENTER;
+    -fx-pref-width: 900;
+    -fx-pref-height: 600;
+}
+
+.login-card {
+    -fx-background-color: #161b22;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 20, 0, 0, 4);
+}
+
+.login-title {
+    -fx-text-fill: white;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.login-subtitle {
+    -fx-text-fill: #8b949e;
+    -fx-font-size: 13px;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-padding: 4 0 0 0;
+}
+
+.login-field {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #1a1a1a;
+    -fx-prompt-text-fill: #8b949e;
+    -fx-background-radius: 5;
+    -fx-border-color: transparent;
+    -fx-border-radius: 5;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 13px;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-pref-height: 36;
+}
+
+.login-field:focused {
+    -fx-border-color: #58a6ff;
+    -fx-border-width: 2;
+    -fx-background-color: #ffffff;
+}
+
+.login-button {
+    -fx-background-color: #d0d7de;
+    -fx-text-fill: #1a1a1a;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-pref-height: 36;
+}
+
+.login-button:hover {
+    -fx-background-color: #b0b7be;
+}
+
+.login-link {
+    -fx-text-fill: #58a6ff;
+    -fx-font-size: 13px;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+.login-link:hover {
+    -fx-text-fill: #79b8ff;
+}
+
+.error-label {
+    -fx-text-fill: #f85149;
+    -fx-font-size: 12px;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-min-height: 16;
+}
+
+/* ---- SIDEBAR ---- */
+.sidebar {
+    -fx-background-color: #0d1117;
+    -fx-border-color: transparent #21262d transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.sidebar-logo-area {
+    -fx-background-color: transparent;
+}
+
+.sidebar-logo {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.sidebar-portal-label {
+    -fx-text-fill: #8b949e;
+    -fx-font-size: 10px;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-letter-spacing: 0.08em;
+}
+
+.sidebar-section-label {
+    -fx-text-fill: #6e7681;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Nav buttons */
+.nav-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #c9d1d9;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 20 10 20;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.nav-item:hover {
+    -fx-background-color: #161b22;
+    -fx-text-fill: white;
+}
+
+.nav-item-active {
+    -fx-background-color: #21262d;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* User footer */
+.sidebar-user-area {
+    -fx-border-color: #21262d transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+}
+
+.user-avatar {
+    -fx-background-color: #388bfd;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-min-width: 36;
+    -fx-min-height: 36;
+    -fx-max-width: 36;
+    -fx-max-height: 36;
+    -fx-background-radius: 18;
+    -fx-alignment: CENTER;
+    -fx-padding: 0;
+}
+
+.user-name {
+    -fx-text-fill: #c9d1d9;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.user-role {
+    -fx-text-fill: #8b949e;
+    -fx-font-size: 11px;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.sidebar-action-btn {
+    -fx-background-color: #21262d;
+    -fx-text-fill: #c9d1d9;
+    -fx-font-size: 13px;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-padding: 7 12 7 12;
+}
+
+.sidebar-action-btn:hover {
+    -fx-background-color: #30363d;
+}
+
+.sidebar-logout-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #f85149;
+    -fx-font-size: 13px;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-background-radius: 6;
+    -fx-border-color: #f85149;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+    -fx-padding: 7 12 7 12;
+}
+
+.sidebar-logout-btn:hover {
+    -fx-background-color: rgba(248, 81, 73, 0.1);
+}
+
+/* ---- MAIN CONTENT ---- */
+.main-content {
+    -fx-background-color: #0d1117;
+}
+
+.page-title {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ---- STAT CARDS ---- */
+.stat-card {
+    -fx-background-color: #161b22;
+    -fx-background-radius: 10;
+    -fx-border-color: #21262d;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+}
+
+.stat-label {
+    -fx-text-fill: #8b949e;
+    -fx-font-size: 12px;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.stat-value-blue {
+    -fx-text-fill: #58a6ff;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.stat-value-red {
+    -fx-text-fill: #f85149;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.stat-value-green {
+    -fx-text-fill: #3fb950;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.stat-value-yellow {
+    -fx-text-fill: #d29922;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ---- MY CLASSES ---- */
+.classes-section {
+    -fx-background-color: #161b22;
+    -fx-background-radius: 10;
+    -fx-border-color: #21262d;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+}
+
+.section-heading {
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.class-card {
+    -fx-background-color: #0d1117;
+    -fx-background-radius: 8;
+    -fx-border-color: #21262d;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+}
+
+.class-card:hover {
+    -fx-background-color: #161b22;
+    -fx-border-color: #388bfd;
+}
+
+.class-name {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.class-time {
+    -fx-text-fill: #8b949e;
+    -fx-font-size: 12px;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ---- GENERAL OVERRIDES ---- */
+.label {
+    -fx-text-fill: #c9d1d9;
+}
+
+.text-field, .password-field {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #1a1a1a;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
