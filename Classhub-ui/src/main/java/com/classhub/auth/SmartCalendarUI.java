@@ -62,7 +62,9 @@ public class SmartCalendarUI {
         dashItem.setOnMouseClicked(e -> stage.setScene(new Dashboard(stage).getScene()));
         nav.getChildren().add(dashItem);
         nav.getChildren().add(navItem("Smart Calendar", true));
-        nav.getChildren().add(navItem("Assignments", false));
+        Label assignItem = navItem("Assignments", false);
+        assignItem.setOnMouseClicked(e -> stage.setScene(new AssignmentsPage(stage).getScene()));
+        nav.getChildren().add(assignItem);
         nav.getChildren().add(navItem("Grades", false));
         nav.getChildren().add(navItem("Notes", false));
 
