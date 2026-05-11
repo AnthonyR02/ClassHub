@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="951b22c8-c1be-40ba-ba56-c1e2e2f21277" name="Changes" comment="changed file hierarchy for neatness">
+      <change afterPath="$PROJECT_DIR$/Classhub/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Classhub/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Classhub/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-backend/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/java/com/classhub/ClassHubApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/ClassHubApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/java/com/classhub/auth/AssignmentsPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/AssignmentsPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/java/com/classhub/auth/Dashboard.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/Dashboard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/java/com/classhub/auth/GradesPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/GradesPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/java/com/classhub/auth/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/LoginPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/java/com/classhub/auth/NotesPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/NotesPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/java/com/classhub/auth/RegisterPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/RegisterPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/java/com/classhub/auth/SmartCalendarUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/SmartCalendarUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/target/classes/com/classhub/ClassHubApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/target/classes/com/classhub/auth/Dashboard.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/target/classes/com/classhub/auth/LoginPage.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/target/classes/com/classhub/auth/RegisterPage.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub-ui/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/TODO.md" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;M-y-les&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/AnthonyR02/ClassHub.git&quot;,
+    &quot;accountId&quot;: &quot;757e2b16-7ca2-4bf1-b1cd-1eb2f9268eab&quot;
+  }
+}</component>
+  <component name="MavenRunner">
+    <option name="delegateBuildToMaven" value="true" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="3DVPXaeiPFAJrvQxIrFLWhwOIl4" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.ClassHubApplication.executor": "Run",
+    "Maven.classhub-backend [clean].executor": "Run",
+    "Maven.classhub-backend [install].executor": "Run",
+    "Maven.classhub-backend [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "#23 on login-feature",
+    "kotlin-language-version-configured": "true",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.runner"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\myles\Downloads\ClassHub111\Classhub-backend" />
+    </key>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="951b22c8-c1be-40ba-ba56-c1e2e2f21277" name="Changes" comment="" />
+      <created>1778364303263</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1778364303263</updated>
+    </task>
+    <task id="LOCAL-00001" summary="polished ui">
+      <option name="closed" value="true" />
+      <created>1778449747280</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1778449747280</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Made assignments page with sidebar and topbar">
+      <option name="closed" value="true" />
+      <created>1778459075620</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1778459075620</updated>
+    </task>
+    <task id="LOCAL-00003" summary="added class filterand scrollable list">
+      <option name="closed" value="true" />
+      <created>1778465133320</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1778465133320</updated>
+    </task>
+    <task id="LOCAL-00004" summary="added assignments and announcements with class filter and checkboxes">
+      <option name="closed" value="true" />
+      <created>1778479230067</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1778479230067</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Created grades page and wired together some pieces">
+      <option name="closed" value="true" />
+      <created>1778523705934</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1778523705934</updated>
+    </task>
+    <task id="LOCAL-00006" summary="made grades by class section and a whatif gpa calculator">
+      <option name="closed" value="true" />
+      <created>1778534860623</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1778534860623</updated>
+    </task>
+    <task id="LOCAL-00007" summary="changed file hierarchy for neatness">
+      <option name="closed" value="true" />
+      <created>1778535223250</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1778535223250</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="polished ui" />
+    <MESSAGE value="Made assignments page with sidebar and topbar" />
+    <MESSAGE value="added class filterand scrollable list" />
+    <MESSAGE value="added assignments and announcements with class filter and checkboxes" />
+    <MESSAGE value="Created grades page and wired together some pieces" />
+    <MESSAGE value="made grades by class section and a whatif gpa calculator" />
+    <MESSAGE value="changed file hierarchy for neatness" />
+    <option name="LAST_COMMIT_MESSAGE" value="changed file hierarchy for neatness" />
+  </component>
+</project>
