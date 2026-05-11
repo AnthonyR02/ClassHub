@@ -5,10 +5,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import java.util.*;
 
 public class AssignmentsPage {
 
     private Scene scene;
+
+    private static final String[] CLASSES = {"All", "Calculus II", "Data Structures", "Physics I", "English Composition", "Chemistry Lab", "World History"};
+    private String activeFilter = "All";
+    private VBox itemList;
+    private HBox filterRow;
 
     public AssignmentsPage(Stage stage) {
         HBox root = new HBox(0);
@@ -88,8 +94,57 @@ public class AssignmentsPage {
         title.setStyle("-fx-font-size:15px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:#e8eaf2;");
         topbar.getChildren().add(title);
 
-        main.getChildren().add(topbar);
+        VBox content = new VBox(14);
+        content.setPadding(new Insets(20));
+        content.setStyle("-fx-background-color:#0f1117;");
+        VBox.setVgrow(content, Priority.ALWAYS);
+
+        HBox filterContainer = new HBox(10);
+        filterContainer.setAlignment(Pos.CENTER_LEFT);
+        Label filterLabel = new Label("Filter:");
+        filterLabel.setStyle("-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-text-fill:#5e6482;");
+        filterRow = new HBox(6);
+        for (String cls : CLASSES) filterRow.getChildren().add(buildFilterChip(cls));
+        filterContainer.getChildren().addAll(filterLabel, filterRow);
+
+        itemList = new VBox(8);
+
+        ScrollPane scroll = new ScrollPane(itemList);
+        scroll.setStyle("-fx-background-color:transparent;-fx-background:#0f1117;");
+        scroll.setFitToWidth(true);
+        scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scroll.setBorder(Border.EMPTY);
+        VBox.setVgrow(scroll, Priority.ALWAYS);
+
+        content.getChildren().addAll(filterContainer, scroll);
+        main.getChildren().addAll(topbar, content);
         return main;
+    }
+
+    private Label buildFilterChip(String cls) {
+        Label chip = new Label(cls);
+        chip.setPadding(new Insets(5, 12, 5, 12));
+        boolean active = cls.equals(activeFilter);
+        chip.setStyle(active
+                ? "-fx-background-color:rgba(108,142,245,0.12);-fx-text-fill:#6c8ef5;-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-background-radius:6;-fx-border-color:rgba(108,142,245,0.2);-fx-border-width:1;-fx-border-radius:6;-fx-cursor:hand;"
+                : "-fx-background-color:#181c27;-fx-text-fill:#9097b4;-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-background-radius:6;-fx-border-color:#ffffff12;-fx-border-width:1;-fx-border-radius:6;-fx-cursor:hand;"
+        );
+        chip.setOnMouseClicked(e -> {
+            activeFilter = cls;
+            refreshFilterChips();
+            refreshList();
+        });
+        return chip;
+    }
+
+    private void refreshFilterChips() {
+        filterRow.getChildren().clear();
+        for (String cls : CLASSES) filterRow.getChildren().add(buildFilterChip(cls));
+    }
+
+    private void refreshList() {
+        itemList.getChildren().clear();
     }
 
     private Label navItem(String text, boolean active) {
