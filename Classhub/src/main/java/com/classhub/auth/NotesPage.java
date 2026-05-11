@@ -333,15 +333,7 @@ public class NotesPage {
 
         editor.setWrapText(true);
 
-        editor.setStyle(
-                "-fx-background-color:#0f1117;" +
-                        "-fx-text-fill:#e8eaf2;" +
-                        "-fx-prompt-text-fill:#5e6482;" +
-                        "-fx-font-size:14px;" +
-                        "-fx-font-family:'Segoe UI';" +
-                        "-fx-border-color:transparent;" +
-                        "-fx-padding:16;"
-        );
+        editor.setStyle("-fx-control-inner-background:#0f1117;-fx-background-color:#0f1117;-fx-text-fill:#e8eaf2;-fx-prompt-text-fill:#5e6482;-fx-font-size:14px;-fx-font-family:'Segoe UI';-fx-border-color:transparent;-fx-background-radius:0;");
 
         VBox.setVgrow(editor, Priority.ALWAYS);
 
