@@ -230,3 +230,4 @@ public class GradesPage {
 
     public Scene getScene() { return scene; }
 }
+
