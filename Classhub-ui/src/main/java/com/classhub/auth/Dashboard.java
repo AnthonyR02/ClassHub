@@ -67,8 +67,12 @@ public class Dashboard {
         Label assignItem = navItem("Assignments", false);
         assignItem.setOnMouseClicked(e -> stage.setScene(new AssignmentsPage(stage).getScene()));
         nav.getChildren().add(assignItem);
-        nav.getChildren().add(navItem("Grades",         false));
-        nav.getChildren().add(navItem("Notes",          false));
+        Label gradesItem = navItem("Grades", false);
+        gradesItem.setOnMouseClicked(e -> stage.setScene(new GradesPage(stage).getScene()));
+        nav.getChildren().add(gradesItem);
+        Label notesItem = navItem("Notes", false);
+        notesItem.setOnMouseClicked(e -> stage.setScene(new NotesPage(stage).getScene()));
+        nav.getChildren().add(notesItem);
 
         // placeholder footer
         VBox footer = new VBox(8);
