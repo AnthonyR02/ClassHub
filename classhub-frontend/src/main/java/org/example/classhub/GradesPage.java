@@ -204,7 +204,8 @@ public class GradesPage {
     }
 
     private VBox buildClassSection() {
-        VBox section = new VBox(8);
+        classSection = new VBox(8);
+        VBox section = classSection;
         section.setPadding(new Insets(16, 20, 16, 20));
         section.setStyle("-fx-background-color:#181c27;-fx-border-color:#ffffff12;-fx-border-width:1;-fx-border-radius:12;-fx-background-radius:12;");
         Label title = new Label("Grades by Class");
@@ -218,7 +219,6 @@ public class GradesPage {
         titleRow.setAlignment(Pos.CENTER_LEFT);
         titleRow.getChildren().addAll(title, spacer, addGradeBtn);
         section.getChildren().add(titleRow);
-        section.getChildren().add(title);
         for (String[] cls : CLASSES) {
             HBox row = new HBox(12);
             row.setAlignment(Pos.CENTER_LEFT);
@@ -358,7 +358,8 @@ public class GradesPage {
                             SessionManager.getIdToken());
                     Platform.runLater(() -> {
                         dialog.close();
-                        loadGrades(); // refresh GPA
+                        loadGrades();
+                        refreshGradeSection();// refresh GPA
                     });
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -381,6 +382,41 @@ public class GradesPage {
                 letterBox, errorLbl, saveBtn);
         dialog.setScene(new javafx.scene.Scene(form));
         dialog.show();
+    }
+
+    private void refreshGradeSection() {
+        classSection.getChildren().clear();
+
+        Label title = new Label("Grades by Class");
+        title.setStyle("-fx-font-size:13px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:#e8eaf2;");
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        Button addGradeBtn = new Button("+ Add Grade");
+        addGradeBtn.setStyle("-fx-background-color:rgba(108,142,245,0.12);-fx-text-fill:#6c8ef5;-fx-font-size:11px;-fx-font-family:'Segoe UI';-fx-background-radius:6;-fx-padding:5 10 5 10;-fx-cursor:hand;-fx-border-color:rgba(108,142,245,0.2);-fx-border-width:1;-fx-border-radius:6;");
+        addGradeBtn.setOnAction(e -> showAddGradeDialog());
+        HBox titleRow = new HBox();
+        titleRow.setAlignment(Pos.CENTER_LEFT);
+        titleRow.getChildren().addAll(title, spacer, addGradeBtn);
+        classSection.getChildren().add(titleRow);
+
+        for (String[] cls : CLASSES) {
+            HBox row = new HBox(12);
+            row.setAlignment(Pos.CENTER_LEFT);
+            row.setPadding(new Insets(12, 16, 12, 16));
+            row.setStyle("-fx-background-color:#0f1117;-fx-border-color:#ffffff12;-fx-border-width:1;-fx-border-radius:8;-fx-background-radius:8;");
+            Label nameLbl = new Label(cls[0]);
+            nameLbl.setStyle("-fx-font-size:13px;-fx-font-family:'Segoe UI';-fx-text-fill:#e8eaf2;");
+            HBox.setHgrow(nameLbl, Priority.ALWAYS);
+            int g = Integer.parseInt(cls[1]);
+            String color   = g >= 90 ? "#3ecfb0" : g >= 80 ? "#f5a623" : "#f5697b";
+            String bgColor = g >= 90 ? "rgba(62,207,176,0.12)" : g >= 80 ? "rgba(245,166,35,0.12)" : "rgba(245,105,123,0.12)";
+            Label letterLbl = new Label(cls[2]);
+            letterLbl.setStyle("-fx-font-size:12px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:" + color + ";-fx-background-color:" + bgColor + ";-fx-background-radius:6;-fx-padding:3 10 3 10;");
+            Label scoreLbl = new Label(cls[1] + "%");
+            scoreLbl.setStyle("-fx-font-size:13px;-fx-font-weight:600;-fx-font-family:'Segoe UI';-fx-text-fill:" + color + ";");
+            row.getChildren().addAll(nameLbl, letterLbl, scoreLbl);
+            classSection.getChildren().add(row);
+        }
     }
 
     public Scene getScene() { return scene; }
