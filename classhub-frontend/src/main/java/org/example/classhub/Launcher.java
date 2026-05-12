@@ -1,11 +1,11 @@
-package org.example.loginscreen;
+package org.example.classhub;
 
 import javafx.application.Application;
 
 public class Launcher {
     public static void main(String[] args) {
 
-        Application.launch(HelloApplication.class, args);
+        Application.launch(ClassHubApplication.class, args);
     }
 }
 

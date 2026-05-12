@@ -1,4 +1,4 @@
-package org.example.loginscreen;
+package org.example.classhub;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
