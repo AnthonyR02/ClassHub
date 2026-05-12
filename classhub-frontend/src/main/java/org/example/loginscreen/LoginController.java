@@ -37,39 +37,37 @@ public class LoginController {
         }
     }
 
-    //submit button to dashboard
     public void goToDashboard(ActionEvent event) {
         String email = usernameField.getText();
         String password = passwordField.getText();
 
+        if(usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
+            errorLabel.setText("Please enter your email and password");
+            return;
+        }
 
         try {
-            HttpClient client = HttpClient.newHttpClient();
+            FirebaseAuthClient client = new FirebaseAuthClient();
 
-            String body = "{\"email\":\"" + email + "\",\"password\":\"" + password + "\"}";
+            String idToken = client.signIn(email, password);
 
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/auth/login"))
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(body))
-                    .build();
+            client.verifyWithSpring(idToken);
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-
-        if(response.statusCode() == 200) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard-view.fxml"));
             Parent root = loader.load();
-
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
-        } else{
-            errorLabel.setText("Incorrect email or password.");
-        }
 
         } catch (Exception e) {
             e.printStackTrace();
-            errorLabel.setText("Could not connect to server");
+            String message = e.getMessage();
+            if (message.contains("INVALID_LOGIN_CREDENTIALS")) {
+                errorLabel.setText("Invalid email or password");
+            } else if (message.contains("TOO_MANY_ATTEMPTS")) {
+                errorLabel.setText("Too many attempts, please try again later");
+            } else {
+                errorLabel.setText("Could not connect to server.");
+            }
         }
     }
 }

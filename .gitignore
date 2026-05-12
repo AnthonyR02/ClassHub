@@ -12,6 +12,8 @@ target/
 *.iml
 *.ipr
 .idea/
+firebase-service-account.json
+**/firebase-service-account.json
 ### Eclipse ###
 .apt_generated
 .classpath
