@@ -12,22 +12,22 @@ public class AssignmentsPage {
 
     private Scene scene;
 
-    private static final String[] CLASSES = {"All", "Calculus II", "Data Structures", "Physics I", "English Composition", "Chemistry Lab", "World History"};
+    private static final String[] CLASSES = {"All", "Operating Systems", "Data Structures II", "Advanced Programming", "Software Engineering", "Computer Networks", "Discrete Mathematics"};
     private String activeFilter = "All";
     private VBox itemList;
     private HBox filterRow;
 
     private static final ArrayList<String[]> ITEMS = new ArrayList<>(Arrays.asList(
-            new String[]{"ASSIGNMENT",   "CS HW: Recursion practice",         "Data Structures",     "Due Apr 12",   "false"},
-            new String[]{"ANNOUNCEMENT", "Midterm review session Friday 3pm", "Calculus II",         "Posted Apr 8", "false"},
-            new String[]{"ASSIGNMENT",   "Lab Report 3",                      "Chemistry Lab",       "Due Apr 3",    "true"},
-            new String[]{"ASSIGNMENT",   "Essay: Industrial Revolution",      "English Composition", "Due Apr 18",   "false"},
-            new String[]{"ANNOUNCEMENT", "Class cancelled this Wednesday",    "Physics I",           "Posted Apr 7", "false"},
-            new String[]{"ASSIGNMENT",   "Problem set 7",                     "Physics I",           "Due Apr 14",   "false"},
-            new String[]{"ASSIGNMENT",   "Reading: Chapters 5-6",             "World History",       "Due Apr 16",   "false"},
-            new String[]{"ANNOUNCEMENT", "Office hours moved to Tuesday",     "Data Structures",     "Posted Apr 5", "false"},
-            new String[]{"ASSIGNMENT",   "Quiz prep worksheet",               "Calculus II",         "Due Apr 11",   "true"},
-            new String[]{"ASSIGNMENT",   "Group project proposal",            "World History",       "Due Apr 20",   "false"}
+            new String[]{"ASSIGNMENT",   "Lab: Process Scheduling Simulation",    "Operating Systems",     "Due Apr 12",   "false"},
+            new String[]{"ANNOUNCEMENT", "Midterm review session Friday 3pm",     "Data Structures II",    "Posted Apr 8", "false"},
+            new String[]{"ASSIGNMENT",   "HW 3: AVL Trees & Red-Black Trees",     "Data Structures II",    "Due Apr 3",    "true"},
+            new String[]{"ASSIGNMENT",   "Project 2: Multithreaded Server",       "Advanced Programming",  "Due Apr 18",   "false"},
+            new String[]{"ANNOUNCEMENT", "Guest lecture moved to Thursday",       "Software Engineering",  "Posted Apr 7", "false"},
+            new String[]{"ASSIGNMENT",   "Sprint 1 retrospective write-up",       "Software Engineering",  "Due Apr 14",   "false"},
+            new String[]{"ASSIGNMENT",   "Reading: TCP/IP Chapters 4-5",          "Computer Networks",     "Due Apr 16",   "false"},
+            new String[]{"ANNOUNCEMENT", "Office hours moved to Tuesday",         "Data Structures II",    "Posted Apr 5", "false"},
+            new String[]{"ASSIGNMENT",   "Problem Set 5: Graph Proofs",           "Discrete Mathematics",  "Due Apr 11",   "true"},
+            new String[]{"ASSIGNMENT",   "Design doc: CI/CD pipeline proposal",   "Software Engineering",  "Due Apr 20",   "false"}
     ));
 
     public AssignmentsPage(Stage stage) {

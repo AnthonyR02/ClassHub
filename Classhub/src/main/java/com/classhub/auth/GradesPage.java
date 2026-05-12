@@ -10,12 +10,12 @@ import javafx.stage.Stage;
 public class GradesPage {
 
     private static final String[][] CLASSES = {
-            {"Calculus II",         "92", "A"},
-            {"Data Structures",     "90", "A"},
-            {"Physics I",           "83", "B"},
-            {"English Composition", "88", "A"},
-            {"Chemistry Lab",       "79", "B"},
-            {"World History",       "85", "A"},
+            {"Operating Systems",     "91", "A"},
+            {"Data Structures II",    "88", "A"},
+            {"Advanced Programming",  "84", "B"},
+            {"Software Engineering",  "90", "A"},
+            {"Computer Networks",     "78", "C"},
+            {"Discrete Mathematics",  "82", "B"},
     };
 
     private Scene scene;
@@ -166,18 +166,21 @@ public class GradesPage {
         title.setStyle("-fx-font-size:13px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:#e8eaf2;");
         section.getChildren().add(title);
         for (String[] cls : CLASSES) {
-            HBox row = new HBox();
+            HBox row = new HBox(12);
             row.setAlignment(Pos.CENTER_LEFT);
-            row.setPadding(new Insets(10, 14, 10, 14));
+            row.setPadding(new Insets(12, 16, 12, 16));
             row.setStyle("-fx-background-color:#0f1117;-fx-border-color:#ffffff12;-fx-border-width:1;-fx-border-radius:8;-fx-background-radius:8;");
             Label nameLbl = new Label(cls[0]);
             nameLbl.setStyle("-fx-font-size:13px;-fx-font-family:'Segoe UI';-fx-text-fill:#e8eaf2;");
             HBox.setHgrow(nameLbl, Priority.ALWAYS);
             int g = Integer.parseInt(cls[1]);
             String color = g >= 90 ? "#3ecfb0" : g >= 80 ? "#f5a623" : "#f5697b";
-            Label gradeLbl = new Label(cls[2] + "  " + cls[1] + "%");
-            gradeLbl.setStyle("-fx-font-size:13px;-fx-font-weight:600;-fx-font-family:'Segoe UI';-fx-text-fill:" + color + ";");
-            row.getChildren().addAll(nameLbl, gradeLbl);
+            String bgColor = g >= 90 ? "rgba(62,207,176,0.12)" : g >= 80 ? "rgba(245,166,35,0.12)" : "rgba(245,105,123,0.12)";
+            Label letterLbl = new Label(cls[2]);
+            letterLbl.setStyle("-fx-font-size:12px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:" + color + ";-fx-background-color:" + bgColor + ";-fx-background-radius:6;-fx-padding:3 10 3 10;");
+            Label scoreLbl = new Label(cls[1] + "%");
+            scoreLbl.setStyle("-fx-font-size:13px;-fx-font-weight:600;-fx-font-family:'Segoe UI';-fx-text-fill:" + color + ";");
+            row.getChildren().addAll(nameLbl, letterLbl, scoreLbl);
             section.getChildren().add(row);
         }
         return section;

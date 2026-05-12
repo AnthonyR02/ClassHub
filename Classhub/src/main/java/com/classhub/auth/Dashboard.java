@@ -19,12 +19,12 @@ public class Dashboard {
     private static final String ROSE    = "#f5697b";
     private static final String SURFACE2= "#1f2436";
     private static final String[][] CLASSES = {
-            {"Calculus II",         "MWF 9:00 AM"},
-            {"Data Structures",     "TTH 10:30 AM"},
-            {"Physics I",           "MWF 11:00 AM"},
-            {"English Composition", "TTH 1:00 PM"},
-            {"Chemistry Lab",       "W 2:00 PM"},
-            {"World History",       "MWF 2:00 PM"},
+            {"Operating Systems",      "MWF 9:00 AM"},
+            {"Data Structures II",     "TTH 10:30 AM"},
+            {"Advanced Programming",   "MWF 11:00 AM"},
+            {"Software Engineering",   "TTH 1:00 PM"},
+            {"Computer Networks",      "W 2:00 PM"},
+            {"Discrete Mathematics",   "MWF 2:00 PM"},
     };
 
     private Scene scene;
@@ -92,16 +92,14 @@ public class Dashboard {
         userInfo.getChildren().addAll(userName, userRole);
         userRow.getChildren().addAll(initials, userInfo);
 
-        Button settingsBtn = new Button("Settings");
-        settingsBtn.setMaxWidth(Double.MAX_VALUE);
-        settingsBtn.setStyle("-fx-background-color:" + SURFACE2 + ";-fx-text-fill:" + TEXT2 + ";-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-background-radius:8;-fx-padding:7 12 7 12;-fx-cursor:hand;-fx-border-color:" + BORDER + ";-fx-border-width:1;-fx-border-radius:8;");
+
 
         Button logoutBtn = new Button("Logout");
         logoutBtn.setMaxWidth(Double.MAX_VALUE);
         logoutBtn.setStyle("-fx-background-color:rgba(245,105,123,0.1);-fx-text-fill:" + ROSE + ";-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-background-radius:8;-fx-padding:7 12 7 12;-fx-cursor:hand;-fx-border-color:rgba(245,105,123,0.2);-fx-border-width:1;-fx-border-radius:8;");
         logoutBtn.setOnAction(e -> stage.setScene(ClassHubApplication.loginScene));
 
-        footer.getChildren().addAll(userRow, settingsBtn, logoutBtn);
+        footer.getChildren().addAll(userRow, logoutBtn);
         sidebar.getChildren().addAll(logo, nav, footer);
         return sidebar;
     }
@@ -126,12 +124,15 @@ public class Dashboard {
         ScrollPane scroll = new ScrollPane(content);
         scroll.setStyle("-fx-background-color:transparent;-fx-background:" + BG + ";");
         scroll.setFitToWidth(true);
+        scroll.setFitToHeight(true);
         scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scroll.setBorder(Border.EMPTY);
         VBox.setVgrow(scroll, Priority.ALWAYS);
 
         main.getChildren().addAll(topbar, scroll);
-        content.getChildren().addAll(buildStatRow(), buildClassesSection());
+        VBox classSection = buildClassesSection();
+        VBox.setVgrow(classSection, Priority.ALWAYS);
+        content.getChildren().addAll(buildStatRow(), classSection);
         return main;
     }
 
@@ -188,14 +189,17 @@ public class Dashboard {
         int cols = 2;
         int rows = (int) Math.ceil(CLASSES.length / (double) cols);
         VBox grid = new VBox(10);
+        VBox.setVgrow(grid, Priority.ALWAYS);
         for (int r = 0; r < rows; r++) {
             HBox row = new HBox(10);
+            VBox.setVgrow(row, Priority.ALWAYS);
             for (int c = 0; c < cols; c++) {
                 int idx = r * cols + c;
                 if (idx < CLASSES.length) {
                     VBox card = classCard(CLASSES[idx][0], CLASSES[idx][1]);
                     HBox.setHgrow(card, Priority.ALWAYS);
                     card.setMaxWidth(Double.MAX_VALUE);
+                    card.setMaxHeight(Double.MAX_VALUE);
                     row.getChildren().add(card);
                 } else {
                     Region filler = new Region();
@@ -212,13 +216,16 @@ public class Dashboard {
     private VBox classCard(String name, String time) {
         VBox card = new VBox(6);
         card.setPadding(new Insets(0, 20, 0, 20));
-        card.setMinHeight(80); card.setMaxHeight(80);
+        card.setMinHeight(100);
         card.setAlignment(Pos.CENTER_LEFT);
         card.setStyle("-fx-background-color:" + BG + ";-fx-border-color:" + BORDER + ";-fx-border-width:1;-fx-border-radius:8;-fx-background-radius:8;-fx-cursor:hand;");
+
         Label nameLbl = new Label(name);
-        nameLbl.setStyle("-fx-font-size:14px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:" + TEXT + ";");
+        nameLbl.setStyle("-fx-font-size:18px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:" + TEXT + ";");  // was 14px
+
         Label timeLbl = new Label(time);
-        timeLbl.setStyle("-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-text-fill:" + TEXT3 + ";");
+        timeLbl.setStyle("-fx-font-size:15px;-fx-font-family:'Segoe UI';-fx-text-fill:" + TEXT3 + ";");  // was 12px
+
         card.getChildren().addAll(nameLbl, timeLbl);
         return card;
     }

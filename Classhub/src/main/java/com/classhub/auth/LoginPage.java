@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.scene.layout.Region;
 
 public class LoginPage {
 
@@ -24,7 +25,7 @@ public class LoginPage {
         //Title
         Label title = new Label("ClassHub");
         title.setStyle(
-                "-fx-font-size:26px;" +
+                "-fx-font-size:36px;" +
                         "-fx-font-weight:700;" +
                         "-fx-font-family:'Segoe UI';" +
                         "-fx-text-fill:" + TEXT + ";"
@@ -32,7 +33,7 @@ public class LoginPage {
 
         Label subtitle = new Label("Sign in to your account");
         subtitle.setStyle(
-                "-fx-font-size:13px;" +
+                "-fx-font-size:16px;" +     // was 13
                         "-fx-font-family:'Segoe UI';" +
                         "-fx-text-fill:" + TEXT3 + ";"
         );
@@ -41,14 +42,17 @@ public class LoginPage {
         TextField emailField = new TextField();
         emailField.setPromptText("Email");
         emailField.setMaxWidth(Double.MAX_VALUE);
+        emailField.setStyle("-fx-font-size:14px;-fx-padding:10 14 10 14;");
 
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("Password");
         passwordField.setMaxWidth(Double.MAX_VALUE);
+        passwordField.setStyle("-fx-font-size:14px;-fx-padding:10 14 10 14;");
 
         //Buttons
         Button loginBtn = new Button("Login");
         loginBtn.setMaxWidth(Double.MAX_VALUE);
+        loginBtn.setStyle("-fx-font-size:14px;-fx-padding:10 0 10 0;");
 
         Hyperlink createAccountLink = new Hyperlink("Create Account");
 
@@ -83,8 +87,9 @@ public class LoginPage {
         //Card
         VBox card = new VBox(14);
         card.setAlignment(Pos.CENTER_LEFT);
-        card.setPadding(new Insets(40, 44, 40, 44));
-        card.setMaxWidth(400);
+        card.setPadding(new Insets(60, 80, 60, 80));
+        card.setMaxWidth(700);
+        card.setMaxHeight(Region.USE_PREF_SIZE);
 
         card.setStyle(
                 "-fx-background-color:" + SURFACE + ";" +
