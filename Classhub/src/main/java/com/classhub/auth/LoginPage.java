@@ -73,7 +73,7 @@ public class LoginPage {
             // show success
             errorLabel.setVisible(false);
             errorLabel.setManaged(false);
-            stage.setScene(new Dashboard(stage).getScene());
+            stage.setScene(com.classhub.ClassHubApplication.dashboardScene);
         });
 
         createAccountLink.setOnAction(e -> {
@@ -99,8 +99,11 @@ public class LoginPage {
         //Root
         StackPane root = new StackPane(card);
         root.setStyle("-fx-background-color:" + BG + ";");
+        root.setMinWidth(Double.MAX_VALUE);
+        root.setMinHeight(Double.MAX_VALUE);
+        StackPane.setAlignment(card, Pos.CENTER);
 
-        scene = new Scene(root, 900, 600);
+        scene = new Scene(root, 1280, 800);
     }
 
     public Scene getScene() {

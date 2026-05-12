@@ -4,32 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="951b22c8-c1be-40ba-ba56-c1e2e2f21277" name="Changes" comment="changed file hierarchy for neatness">
-      <change afterPath="$PROJECT_DIR$/Classhub/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Classhub/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Classhub/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-backend/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/java/com/classhub/ClassHubApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/ClassHubApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/java/com/classhub/auth/AssignmentsPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/AssignmentsPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/java/com/classhub/auth/Dashboard.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/Dashboard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/java/com/classhub/auth/GradesPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/GradesPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/java/com/classhub/auth/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/LoginPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/java/com/classhub/auth/NotesPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/NotesPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/java/com/classhub/auth/RegisterPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/RegisterPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/java/com/classhub/auth/SmartCalendarUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/SmartCalendarUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/target/classes/com/classhub/ClassHubApplication.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/target/classes/com/classhub/auth/Dashboard.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/target/classes/com/classhub/auth/LoginPage.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/target/classes/com/classhub/auth/RegisterPage.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Classhub-ui/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/TODO.md" afterDir="false" />
+    <list default="true" id="951b22c8-c1be-40ba-ba56-c1e2e2f21277" name="Changes" comment="changed project structure and made it easier to use maven immediately (forgot to add this part)">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/ClassHubApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/ClassHubApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/AssignmentsPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/AssignmentsPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/Dashboard.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/Dashboard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/GradesPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/GradesPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/LoginPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/NotesPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/NotesPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/RegisterPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/RegisterPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/SmartCalendarUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/SmartCalendarUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/target/classes/com/classhub/ClassHubApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/target/classes/com/classhub/ClassHubApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/target/classes/com/classhub/auth/AssignmentsPage.class" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/target/classes/com/classhub/auth/AssignmentsPage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/target/classes/com/classhub/auth/Dashboard.class" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/target/classes/com/classhub/auth/Dashboard.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/target/classes/com/classhub/auth/GradesPage.class" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/target/classes/com/classhub/auth/GradesPage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/target/classes/com/classhub/auth/LoginPage.class" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/target/classes/com/classhub/auth/LoginPage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/target/classes/com/classhub/auth/NotesPage.class" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/target/classes/com/classhub/auth/NotesPage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/target/classes/com/classhub/auth/RegisterPage.class" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/target/classes/com/classhub/auth/RegisterPage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/target/classes/com/classhub/auth/SmartCalendarUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/target/classes/com/classhub/auth/SmartCalendarUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/target/classhub-backend-1.0-SNAPSHOT.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classhub/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Classhub/target/maven-archiver/pom.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,6 +72,11 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.ClassHubApplication.executor": "Run",
+    "Maven.ClassHubApplication.executor": "Run",
+    "Maven.Classhub [clean].executor": "Run",
+    "Maven.Classhub [install,--non-recursive].executor": "Run",
+    "Maven.Classhub [install].executor": "Run",
+    "Maven.Classhub [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
     "Maven.classhub-backend [clean].executor": "Run",
     "Maven.classhub-backend [install].executor": "Run",
     "Maven.classhub-backend [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
@@ -159,7 +159,23 @@
       <option name="project" value="LOCAL" />
       <updated>1778535223250</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="changed project structure and made it easier to use maven immediately">
+      <option name="closed" value="true" />
+      <created>1778536917937</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1778536917937</updated>
+    </task>
+    <task id="LOCAL-00009" summary="changed project structure and made it easier to use maven immediately (forgot to add this part)">
+      <option name="closed" value="true" />
+      <created>1778536951411</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1778536951411</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -170,6 +186,19 @@
     <MESSAGE value="Created grades page and wired together some pieces" />
     <MESSAGE value="made grades by class section and a whatif gpa calculator" />
     <MESSAGE value="changed file hierarchy for neatness" />
-    <option name="LAST_COMMIT_MESSAGE" value="changed file hierarchy for neatness" />
+    <MESSAGE value="changed project structure and made it easier to use maven immediately" />
+    <MESSAGE value="changed project structure and made it easier to use maven immediately (forgot to add this part)" />
+    <option name="LAST_COMMIT_MESSAGE" value="changed project structure and made it easier to use maven immediately (forgot to add this part)" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Classhub/src/main/java/com/classhub/auth/RegisterPage.java</url>
+          <line>33</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

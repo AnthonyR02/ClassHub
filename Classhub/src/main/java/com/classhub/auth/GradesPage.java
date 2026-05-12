@@ -1,5 +1,6 @@
 package com.classhub.auth;
 
+import com.classhub.ClassHubApplication;
 import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -51,13 +52,13 @@ public class GradesPage {
         nav.getChildren().add(section);
 
         Label dashItem = navItem("Dashboard", false);
-        dashItem.setOnMouseClicked(e -> stage.setScene(new Dashboard(stage).getScene()));
+        dashItem.setOnMouseClicked(e -> stage.setScene(ClassHubApplication.dashboardScene));
         Label calItem = navItem("Smart Calendar", false);
-        calItem.setOnMouseClicked(e -> stage.setScene(new SmartCalendarUI(stage).getScene()));
+        calItem.setOnMouseClicked(e -> stage.setScene(ClassHubApplication.calendarScene));
         Label assignItem = navItem("Assignments", false);
-        assignItem.setOnMouseClicked(e -> stage.setScene(new AssignmentsPage(stage).getScene()));
+        assignItem.setOnMouseClicked(e -> stage.setScene(ClassHubApplication.assignmentsScene));
         Label notesItem = navItem("Notes", false);
-        notesItem.setOnMouseClicked(e -> stage.setScene(new NotesPage(stage).getScene()));
+        notesItem.setOnMouseClicked(e -> stage.setScene(ClassHubApplication.notesScene));
         nav.getChildren().addAll(dashItem, calItem, assignItem);
         nav.getChildren().add(navItem("Grades", true));
         nav.getChildren().add(notesItem);
@@ -82,7 +83,7 @@ public class GradesPage {
         Button logoutBtn = new Button("Logout");
         logoutBtn.setMaxWidth(Double.MAX_VALUE);
         logoutBtn.setStyle("-fx-background-color:rgba(245,105,123,0.1);-fx-text-fill:#f5697b;-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-background-radius:8;-fx-padding:7 12 7 12;-fx-cursor:hand;-fx-border-color:rgba(245,105,123,0.2);-fx-border-width:1;-fx-border-radius:8;");
-        logoutBtn.setOnAction(e -> stage.setScene(new LoginPage(stage).getScene()));
+        logoutBtn.setOnAction(e -> stage.setScene(ClassHubApplication.loginScene));
         footer.getChildren().addAll(userRow, logoutBtn);
         sidebar.getChildren().addAll(logo, nav, footer);
         return sidebar;
@@ -105,7 +106,6 @@ public class GradesPage {
         content.setPadding(new Insets(20));
         content.setStyle("-fx-background-color:#0f1117;");
 
-        // GPA summary cards
         HBox cards = new HBox(12);
         VBox currentGpa = statCard("Current GPA", "3.8", "#6c8ef5");
         VBox whatIfGpa = new VBox(6);
@@ -116,7 +116,7 @@ public class GradesPage {
         whatIfLabel = new Label("3.8");
         whatIfLabel.setStyle("-fx-font-size:26px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:#3ecfb0;");
         whatIfGpa.getChildren().addAll(whatIfTitle, whatIfLabel);
-        VBox avgGrade   = statCard("Avg Grade",   "86%", "#f5a623");
+        VBox avgGrade = statCard("Avg Grade", "86%", "#f5a623");
         for (VBox c : new VBox[]{currentGpa, whatIfGpa, avgGrade}) {
             HBox.setHgrow(c, Priority.ALWAYS);
             c.setMaxWidth(Double.MAX_VALUE);
@@ -230,4 +230,3 @@ public class GradesPage {
 
     public Scene getScene() { return scene; }
 }
-

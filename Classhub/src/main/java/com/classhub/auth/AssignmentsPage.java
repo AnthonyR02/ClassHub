@@ -1,5 +1,6 @@
 package com.classhub.auth;
 
+import com.classhub.ClassHubApplication;
 import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -58,15 +59,16 @@ public class AssignmentsPage {
         nav.getChildren().add(section);
 
         Label dashItem = navItem("Dashboard", false);
-        dashItem.setOnMouseClicked(e -> stage.setScene(new Dashboard(stage).getScene()));
+        dashItem.setOnMouseClicked(e -> stage.setScene(ClassHubApplication.dashboardScene));
         Label calItem = navItem("Smart Calendar", false);
-        calItem.setOnMouseClicked(e -> stage.setScene(new SmartCalendarUI(stage).getScene()));
+        calItem.setOnMouseClicked(e -> stage.setScene(ClassHubApplication.calendarScene));
+        Label gradesItem = navItem("Grades", false);
+        gradesItem.setOnMouseClicked(e -> stage.setScene(ClassHubApplication.gradesScene));
         Label notesItem = navItem("Notes", false);
-        notesItem.setOnMouseClicked(e -> stage.setScene(new NotesPage(stage).getScene()));
+        notesItem.setOnMouseClicked(e -> stage.setScene(ClassHubApplication.notesScene));
         nav.getChildren().addAll(dashItem, calItem);
         nav.getChildren().add(navItem("Assignments", true));
-        nav.getChildren().add(navItem("Grades", false));
-        nav.getChildren().add(notesItem);
+        nav.getChildren().addAll(gradesItem, notesItem);
 
         VBox footer = new VBox(8);
         footer.setPadding(new Insets(12));
@@ -88,7 +90,7 @@ public class AssignmentsPage {
         Button logoutBtn = new Button("Logout");
         logoutBtn.setMaxWidth(Double.MAX_VALUE);
         logoutBtn.setStyle("-fx-background-color:rgba(245,105,123,0.1);-fx-text-fill:#f5697b;-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-background-radius:8;-fx-padding:7 12 7 12;-fx-cursor:hand;-fx-border-color:rgba(245,105,123,0.2);-fx-border-width:1;-fx-border-radius:8;");
-        logoutBtn.setOnAction(e -> stage.setScene(new LoginPage(stage).getScene()));
+        logoutBtn.setOnAction(e -> stage.setScene(ClassHubApplication.loginScene));
         footer.getChildren().addAll(userRow, logoutBtn);
         sidebar.getChildren().addAll(logo, nav, footer);
         return sidebar;
@@ -121,6 +123,7 @@ public class AssignmentsPage {
         filterContainer.getChildren().addAll(filterLabel, filterRow);
 
         itemList = new VBox(8);
+        refreshList();
 
         ScrollPane scroll = new ScrollPane(itemList);
         scroll.setStyle("-fx-background-color:transparent;-fx-background:#0f1117;");

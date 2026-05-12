@@ -27,7 +27,7 @@ public class RegisterPage {
 
         //Back to Login
         backBtn.setOnAction(e -> {
-            stage.setScene(new LoginPage(stage).getScene());
+            stage.setScene(com.classhub.ClassHubApplication.loginScene);
         });
 
         VBox root = new VBox(15);
