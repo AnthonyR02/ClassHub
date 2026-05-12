@@ -77,8 +77,6 @@ public class LoginPage {
                 return;
             }
 
-
-
             try {
                 FirebaseAuthClient client = new FirebaseAuthClient();
 
@@ -94,7 +92,7 @@ public class LoginPage {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 String message = ex.getMessage();
-                if (message.contains("INVALID_LOGIN_CREDENTIALS")) {
+                if (message.contains("INVALID_EMAIL") || message.contains("INVALID_PASSWORD")) {
                     errorLabel.setText("Invalid email or password");
                 } else if (message.contains("TOO_MANY_ATTEMPTS")) {
                     errorLabel.setText("Too many attempts, please try again later");

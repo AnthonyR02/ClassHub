@@ -82,15 +82,15 @@ public class Dashboard {
 
         HBox userRow = new HBox(8);
         userRow.setAlignment(Pos.CENTER_LEFT);
-        Label initials = new Label("MF");
+        Label initials = new Label(SessionManager.getInitials());
         initials.setMinWidth(32); initials.setMinHeight(32);
         initials.setMaxWidth(32); initials.setMaxHeight(32);
         initials.setAlignment(Pos.CENTER);
         initials.setStyle("-fx-background-color:rgba(108,142,245,0.2);-fx-text-fill:" + ACCENT + ";-fx-font-size:11px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-background-radius:50;");
         VBox userInfo = new VBox(1);
-        Label userName = new Label("Myles Freelin");
+        Label userName = new Label(SessionManager.getFullName());
         userName.setStyle("-fx-font-size:12px;-fx-font-weight:600;-fx-font-family:'Segoe UI';-fx-text-fill:" + TEXT + ";");
-        Label userRole = new Label("Student");
+        Label userRole = new Label(SessionManager.getRole());
         userRole.setStyle("-fx-font-size:10px;-fx-font-family:'Segoe UI';-fx-text-fill:" + TEXT3 + ";");
         userInfo.getChildren().addAll(userName, userRole);
         userRow.getChildren().addAll(initials, userInfo);
@@ -100,7 +100,11 @@ public class Dashboard {
         Button logoutBtn = new Button("Logout");
         logoutBtn.setMaxWidth(Double.MAX_VALUE);
         logoutBtn.setStyle("-fx-background-color:rgba(245,105,123,0.1);-fx-text-fill:" + ROSE + ";-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-background-radius:8;-fx-padding:7 12 7 12;-fx-cursor:hand;-fx-border-color:rgba(245,105,123,0.2);-fx-border-width:1;-fx-border-radius:8;");
-        logoutBtn.setOnAction(e -> stage.setScene(ClassHubApplication.loginScene));
+        logoutBtn.setOnAction(e -> {
+            SessionManager.logout();
+            stage.setScene(ClassHubApplication.loginScene);
+
+        });
 
         footer.getChildren().addAll(userRow, logoutBtn);
         sidebar.getChildren().addAll(logo, nav, footer);

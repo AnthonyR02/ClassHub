@@ -1,6 +1,8 @@
 package org.example.classhub;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,6 +15,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -20,29 +23,95 @@ public class AssignmentsPage {
 
     private Scene scene;
 
-    private static final String[] CLASSES = {"All", "Operating Systems", "Data Structures II", "Advanced Programming", "Software Engineering", "Computer Networks", "Discrete Mathematics"};
+    private static final String[] FILTER_OPTIONS = {"All", "Completed", "In Progress", "Overdue"};
     private String activeFilter = "All";
     private VBox itemList;
     private HBox filterRow;
 
-    private static final ArrayList<String[]> ITEMS = new ArrayList<>(Arrays.asList(
-            new String[]{"ASSIGNMENT",   "Lab: Process Scheduling Simulation",    "Operating Systems",     "Due Apr 12",   "false"},
-            new String[]{"ANNOUNCEMENT", "Midterm review session Friday 3pm",     "Data Structures II",    "Posted Apr 8", "false"},
-            new String[]{"ASSIGNMENT",   "HW 3: AVL Trees & Red-Black Trees",     "Data Structures II",    "Due Apr 3",    "true"},
-            new String[]{"ASSIGNMENT",   "Project 2: Multithreaded Server",       "Advanced Programming",  "Due Apr 18",   "false"},
-            new String[]{"ANNOUNCEMENT", "Guest lecture moved to Thursday",       "Software Engineering",  "Posted Apr 7", "false"},
-            new String[]{"ASSIGNMENT",   "Sprint 1 retrospective write-up",       "Software Engineering",  "Due Apr 14",   "false"},
-            new String[]{"ASSIGNMENT",   "Reading: TCP/IP Chapters 4-5",          "Computer Networks",     "Due Apr 16",   "false"},
-            new String[]{"ANNOUNCEMENT", "Office hours moved to Tuesday",         "Data Structures II",    "Posted Apr 5", "false"},
-            new String[]{"ASSIGNMENT",   "Problem Set 5: Graph Proofs",           "Discrete Mathematics",  "Due Apr 11",   "true"},
-            new String[]{"ASSIGNMENT",   "Design doc: CI/CD pipeline proposal",   "Software Engineering",  "Due Apr 20",   "false"}
-    ));
+    private static final String STATUS_COMPLETED   = "#3ecfb0";
+    private static final String STATUS_OVERDUE     = "#f5697b";
+    private static final String STATUS_IN_PROGRESS = "#f5a623";
+
+    private enum AssignmentStatus {
+        COMPLETED, OVERDUE, IN_PROGRESS
+    }
+
+    private final ArrayList<String[]> ITEMS = new ArrayList<>();
 
     public AssignmentsPage(Stage stage) {
         HBox root = new HBox(0);
         root.setStyle("-fx-background-color:#0f1117;");
         root.getChildren().addAll(buildSidebar(stage), buildMain());
         scene = new Scene(root, 900, 600);
+        loadAssignments();
+    }
+
+    private void loadAssignments() {
+        Thread thread = new Thread(() -> {
+            try {
+                FirebaseAuthClient client = new FirebaseAuthClient();
+                JsonNode assignments = client.getAssignments(
+                        SessionManager.getUserId(),
+                        SessionManager.getIdToken());
+
+                ITEMS.clear();
+
+                for (JsonNode a : assignments) {
+                    ITEMS.add(new String[]{
+                            "ASSIGNMENT",
+                            a.path("title").asText(),
+                            a.path("courseId").asText(),   // will show courseId for now
+                            "Due " + a.path("dueDate").asText(),
+                            String.valueOf(a.path("completed").asBoolean()),
+                            a.path("id").asText()});           // store id at index 5
+
+                }
+                Platform.runLater(this::refreshList);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Platform.runLater(() -> {
+                    itemList.getChildren().clear();
+                    Label err = new Label("Could not load assignments.");
+                    err.setStyle("-fx-font-size:13px;-fx-font-family:'Segoe UI';-fx-text-fill:#f5697b;");
+                    itemList.getChildren().add(err);
+                });
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private AssignmentStatus getStatus(String[] item) {
+        boolean completed = item[4].equals("true");
+        if (completed)
+            return AssignmentStatus.COMPLETED;
+
+        String dueDate = item[3];
+        if (dueDate != null && !dueDate.isBlank()) {
+            try {
+                if (LocalDate.parse(dueDate).isBefore(LocalDate.now())) {
+                    return AssignmentStatus.OVERDUE;
+                }
+            } catch (Exception ignored) {}
+        }
+        return AssignmentStatus.IN_PROGRESS;
+    }
+
+    private String statusColor(AssignmentStatus status) {
+        return switch (status) {
+            case COMPLETED   -> STATUS_COMPLETED;
+            case OVERDUE     -> STATUS_OVERDUE;
+            case IN_PROGRESS -> STATUS_IN_PROGRESS;
+        };
+    }
+
+    private String statusLabel(AssignmentStatus status) {
+        return switch (status) {
+            case COMPLETED   -> "COMPLETED";
+            case OVERDUE     -> "OVERDUE";
+            case IN_PROGRESS -> "IN PROGRESS";
+        };
     }
 
     private VBox buildSidebar(Stage stage) {
@@ -83,22 +152,25 @@ public class AssignmentsPage {
         footer.setStyle("-fx-border-color:#ffffff12;-fx-border-width:1 0 0 0;");
         HBox userRow = new HBox(8);
         userRow.setAlignment(Pos.CENTER_LEFT);
-        Label initials = new Label("MF");
+        Label initials = new Label(SessionManager.getInitials());
         initials.setMinWidth(32); initials.setMinHeight(32);
         initials.setMaxWidth(32); initials.setMaxHeight(32);
         initials.setAlignment(Pos.CENTER);
         initials.setStyle("-fx-background-color:rgba(108,142,245,0.2);-fx-text-fill:#6c8ef5;-fx-font-size:11px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-background-radius:50;");
         VBox userInfo = new VBox(1);
-        Label userName = new Label("Myles Freelin");
+        Label userName = new Label(SessionManager.getFullName());
         userName.setStyle("-fx-font-size:12px;-fx-font-weight:600;-fx-font-family:'Segoe UI';-fx-text-fill:#e8eaf2;");
-        Label userRole = new Label("Student");
+        Label userRole = new Label(SessionManager.getRole());
         userRole.setStyle("-fx-font-size:10px;-fx-font-family:'Segoe UI';-fx-text-fill:#5e6482;");
         userInfo.getChildren().addAll(userName, userRole);
         userRow.getChildren().addAll(initials, userInfo);
         Button logoutBtn = new Button("Logout");
         logoutBtn.setMaxWidth(Double.MAX_VALUE);
         logoutBtn.setStyle("-fx-background-color:rgba(245,105,123,0.1);-fx-text-fill:#f5697b;-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-background-radius:8;-fx-padding:7 12 7 12;-fx-cursor:hand;-fx-border-color:rgba(245,105,123,0.2);-fx-border-width:1;-fx-border-radius:8;");
-        logoutBtn.setOnAction(e -> stage.setScene(ClassHubApplication.loginScene));
+        logoutBtn.setOnAction(e -> {
+            SessionManager.logout();
+            stage.setScene(ClassHubApplication.loginScene);
+        });
         footer.getChildren().addAll(userRow, logoutBtn);
         sidebar.getChildren().addAll(logo, nav, footer);
         return sidebar;
@@ -127,7 +199,7 @@ public class AssignmentsPage {
         Label filterLabel = new Label("Filter:");
         filterLabel.setStyle("-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-text-fill:#5e6482;");
         filterRow = new HBox(6);
-        for (String cls : CLASSES) filterRow.getChildren().add(buildFilterChip(cls));
+        for (String cls : FILTER_OPTIONS) filterRow.getChildren().add(buildFilterChip(cls));
         filterContainer.getChildren().addAll(filterLabel, filterRow);
 
         itemList = new VBox(8);
@@ -164,15 +236,25 @@ public class AssignmentsPage {
 
     private void refreshFilterChips() {
         filterRow.getChildren().clear();
-        for (String cls : CLASSES) filterRow.getChildren().add(buildFilterChip(cls));
+        for (String cls : FILTER_OPTIONS) filterRow.getChildren().add(buildFilterChip(cls));
     }
 
     private void refreshList() {
         itemList.getChildren().clear();
         for (int i = 0; i < ITEMS.size(); i++) {
             String[] item = ITEMS.get(i);
-            if (!activeFilter.equals("All") && !item[2].equals(activeFilter)) continue;
-            itemList.getChildren().add(buildItem(i, item));
+
+            AssignmentStatus status = getStatus(item);
+            if (!activeFilter.equals("All")) {
+                boolean matches = switch (activeFilter) {
+                    case "Completed"   -> status == AssignmentStatus.COMPLETED;
+                    case "In Progress" -> status == AssignmentStatus.IN_PROGRESS;
+                    case "Overdue"     -> status == AssignmentStatus.OVERDUE;
+                    default            -> true;
+                };
+                if (!matches) continue;
+            }
+            itemList.getChildren().add(buildItem(i, item, status));
         }
     }
 
@@ -187,29 +269,54 @@ public class AssignmentsPage {
         return l;
     }
 
-    private HBox buildItem(int idx, String[] item) {
+    private HBox buildItem(int idx, String[] item, AssignmentStatus status) {
         boolean isAssignment = item[0].equals("ASSIGNMENT");
-        boolean isComplete = item[4].equals("true");
+        boolean isComplete = status == AssignmentStatus.COMPLETED;
+        String color = statusColor(status);
 
         HBox row = new HBox(12);
         row.setAlignment(Pos.CENTER_LEFT);
         row.setPadding(new Insets(12, 16, 12, 16));
         row.setStyle("-fx-background-color:#181c27;-fx-border-color:#ffffff12;-fx-border-width:1;-fx-border-radius:10;-fx-background-radius:10;");
 
+        Label statusBadge = new Label(statusLabel(status));
+        statusBadge.setStyle(
+                "-fx-background-color:" + color + "22;" +
+                        "-fx-text-fill:" + color + ";" +
+                        "-fx-font-size:10px;-fx-font-weight:700;-fx-font-family:'Segoe UI';" +
+                        "-fx-background-radius:4;-fx-padding:2 8 2 8;"
+        );
+
+        Label checkbox = null;
         if (isAssignment) {
-            Label checkbox = new Label(isComplete ? "✓" : "");
-            checkbox.setMinWidth(18); checkbox.setMinHeight(18);
-            checkbox.setMaxWidth(18); checkbox.setMaxHeight(18);
+            checkbox = new Label(isComplete ? "✓" : "");
+            checkbox.setMinWidth(18);
+            checkbox.setMinHeight(18);
+            checkbox.setMaxWidth(18);
+            checkbox.setMaxHeight(18);
             checkbox.setAlignment(Pos.CENTER);
             checkbox.setStyle(isComplete
                     ? "-fx-background-color:#3ecfb0;-fx-text-fill:white;-fx-font-size:12px;-fx-font-weight:700;-fx-background-radius:4;-fx-cursor:hand;"
                     : "-fx-background-color:transparent;-fx-border-color:#5e6482;-fx-border-width:1.5;-fx-border-radius:4;-fx-cursor:hand;"
             );
             checkbox.setOnMouseClicked(e -> {
-                ITEMS.get(idx)[4] = isComplete ? "false" : "true";
-                refreshList();
+                String assignmentId = item[5]; // id stored at index 5
+                Thread t = new Thread(() -> {
+                    try {
+                        FirebaseAuthClient client = new FirebaseAuthClient();
+                        client.markAssignmentComplete(assignmentId, SessionManager.getIdToken());
+                        ITEMS.get(idx)[4] = isComplete ? "false" : "true";
+                        refreshList();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                });
+                t.setDaemon(true);
+                t.start();
             });
             row.getChildren().add(checkbox);
+
+
         }
 
         Label badge = new Label(item[0]);
@@ -229,7 +336,7 @@ public class AssignmentsPage {
         sub.setStyle("-fx-font-size:11px;-fx-font-family:'Segoe UI';-fx-text-fill:" + (isComplete ? "#5e6482" : "#9097b4") + ";");
         info.getChildren().addAll(titleLbl, sub);
 
-        row.getChildren().addAll(badge, info);
+        row.getChildren().addAll(checkbox, statusBadge, info);
         return row;
     }
 

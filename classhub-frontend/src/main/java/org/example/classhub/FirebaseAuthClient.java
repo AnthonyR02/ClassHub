@@ -50,6 +50,8 @@ public class FirebaseAuthClient {
             throw new Exception(errorMessage);
         }
 
+
+        SessionManager.setIdToken(json.get("idToken").asText());
         return json.get("idToken").asText();
     }
 
@@ -73,6 +75,37 @@ public class FirebaseAuthClient {
             throw new Exception("Backend verification failed");
         }
 
+        JsonNode user = mapper.readTree(response.body());
+
+        // store in session
+        SessionManager.login(user.path("id").asText(), user.path("fullName").asText(), user.path("role").asText(), user.path("email").asText()
+        );
+
+        return user;
+    }
+
+    // Get all assignments for a user
+    public JsonNode getAssignments(String userId, String idToken) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/assignments/user/" + userId))
+                .header("Authorization", "Bearer " + idToken)
+                .GET().build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new Exception("Failed to load assignments");
+        }
         return mapper.readTree(response.body());
+    }
+
+    // Mark an assignment complete
+    public void markAssignmentComplete(String assignmentId, String idToken) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/assignments/" + assignmentId + "/complete"))
+                .header("Authorization", "Bearer " + idToken)
+                .method("PATCH", HttpRequest.BodyPublishers.noBody()).build();
+
+        httpClient.send(request, HttpResponse.BodyHandlers.ofString());
     }
 }
