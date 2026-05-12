@@ -16,7 +16,7 @@ import java.net.http.HttpResponse;
 public class FirebaseAuthClient {
 
     // Get this from Firebase Console → Project Settings → General → Web API Key
-    private static final String FIREBASE_API_KEY = "AIzaSyDeTUF_bA-J2kgtrMBd7bACKU5HfZCrxvg";
+    private static final String FIREBASE_API_KEY = "AIzaSyDSRn1QV38rbXctM_6_MPp0pL2YndzqGyY";
     private static final String FIREBASE_SIGNIN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + FIREBASE_API_KEY;
     private static final String BACKEND_VERIFY_URL = "http://localhost:8080/api/auth/verify";
 
