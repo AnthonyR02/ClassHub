@@ -132,7 +132,8 @@ Testing Methods Used
 •	Manual Testing 
 Testing Tools
 •	Postman 
-•	Firebase Firestore <img width="954" height="726" alt="Screenshot 2026-04-24 at 9 11 28 PM" src="https://github.com/user-attachments/assets/1fc4dd54-fa7e-4a1a-87c9-766412030c85" />
+•	Firebase Firestore <img width="3358" height="1922" alt="Firebase Firestore" src="https://github.com/user-attachments/assets/e281f933-2211-447b-9bb4-ec0426067e61" />
+
 
 •	JavaFX Frontend Testing 
 Verified Features
