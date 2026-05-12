@@ -29,10 +29,10 @@ public class CourseController {
      * POST /api/courses
      */
     @PostMapping
-    @RequireRole({"TEACHER", "ADMIN"})
     public Course createCourse(@Valid @RequestBody CourseRequest request,
                                HttpServletRequest httpRequest) {
         // Stamp the creator's UID from the verified token
+        request.setUserId((String) httpRequest.getAttribute("uid"));
         request.setTeacherId((String) httpRequest.getAttribute("uid"));
         return courseService.createCourse(request);
     }

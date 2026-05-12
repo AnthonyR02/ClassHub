@@ -99,7 +99,42 @@ public class RegisterPage {
             // FIX: On success, navigate to dashboard (was doing nothing before)
             errorLabel.setVisible(false);
             errorLabel.setManaged(false);
-            stage.setScene(new Dashboard(stage).getScene());
+
+            Thread thread = new Thread(() -> {
+                try {
+                    FirebaseAuthClient client = new FirebaseAuthClient();
+                    client.register(name, email, pass, "STUDENT");
+
+                    // registration succeeded — now sign in automatically
+                    String idToken = client.signIn(email, pass);
+                    client.verifyWithSpring(idToken);
+
+                    javafx.application.Platform.runLater(() -> {
+                        ClassHubApplication.dashboardScene = new Dashboard(stage).getScene();
+                        stage.setScene(ClassHubApplication.dashboardScene);
+                    });
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    javafx.application.Platform.runLater(() -> {
+                        registerBtn.setDisable(false);
+                        registerBtn.setText("Create Account");
+                        String msg = ex.getMessage();
+                        if (msg != null && msg.contains("EMAIL_EXISTS")) {
+                            errorLabel.setText("An account with this email already exists.");
+                        } else if (msg != null && msg.contains("WEAK_PASSWORD")) {
+                            errorLabel.setText("Password must be at least 6 characters.");
+                        } else {
+                            errorLabel.setText("Registration failed. Please try again.");
+                        }
+                        errorLabel.setVisible(true);
+                        errorLabel.setManaged(true);
+                    });
+                }
+            });
+            thread.setDaemon(true);
+            thread.start();
+
         });
 
         // Allow Enter key on confirm field to submit

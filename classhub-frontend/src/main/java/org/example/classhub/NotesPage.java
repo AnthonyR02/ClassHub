@@ -1,6 +1,8 @@
 package org.example.classhub;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -21,12 +23,14 @@ public class NotesPage {
     private TextArea editor;
     private TextField titleField;
     private int selectedIndex = -1;
+    private final ArrayList<String> noteIds = new ArrayList<>();
 
     public NotesPage(Stage stage) {
         HBox root = new HBox(0);
         root.setStyle("-fx-background-color:#0f1117;");
         root.getChildren().addAll(buildSidebar(stage), buildNotePanel());
         scene = new Scene(root, 900, 600);
+        loadNotes();
     }
 
     private VBox buildSidebar(Stage stage) {
@@ -160,27 +164,80 @@ public class NotesPage {
         titleField.requestFocus();
     }
 
+    private void loadNotes() {
+        Thread t = new Thread(() -> {
+            try {
+                FirebaseAuthClient client = new FirebaseAuthClient();
+                JsonNode result = client.getNotes(
+                        SessionManager.getUserId(), SessionManager.getIdToken());
+                notes.clear();
+                noteIds.clear();
+                for (JsonNode n : result) {
+                    notes.add(new String[]{
+                            n.path("title").asText("Untitled"),
+                            n.path("content").asText("")
+                    });
+                    noteIds.add(n.path("id").asText(""));
+                }
+                Platform.runLater(() -> {
+                    refreshList();
+                    if (!notes.isEmpty()) loadNote(0);
+                });
+            } catch (Exception e) { e.printStackTrace(); }
+        });
+        t.setDaemon(true);
+        t.start();
+    }
+
+
+
     private void saveNote() {
         if (selectedIndex < 0) return;
-        notes.get(selectedIndex)[0] = titleField.getText().isBlank() ? "Untitled" : titleField.getText();
-        notes.get(selectedIndex)[1] = editor.getText();
+        String title   = titleField.getText().isBlank() ? "Untitled" : titleField.getText();
+        String content = editor.getText();
+        notes.get(selectedIndex)[0] = title;
+        notes.get(selectedIndex)[1] = content;
+        String existingId = noteIds.get(selectedIndex);
         refreshList();
-    }
 
-    private void deleteNote() {
-        if (selectedIndex < 0) return;
-        notes.remove(selectedIndex);
-        selectedIndex = notes.isEmpty() ? -1 : Math.max(0, selectedIndex - 1);
-        refreshList();
-        if (selectedIndex >= 0) loadNote(selectedIndex);
-        else { titleField.setText(""); editor.setText(""); }
+        Thread t = new Thread(() -> {
+            try {
+                FirebaseAuthClient client = new FirebaseAuthClient();
+                JsonNode result = client.saveNote(existingId, title, content,
+                        SessionManager.getIdToken());
+                String savedId = result.path("id").asText(existingId);
+                noteIds.set(selectedIndex, savedId);
+            } catch (Exception e) { e.printStackTrace(); }
+        });
+        t.setDaemon(true);
+        t.start();
     }
-
     private void loadNote(int idx) {
         selectedIndex = idx;
         titleField.setText(notes.get(idx)[0]);
         editor.setText(notes.get(idx)[1]);
         refreshList();
+    }
+
+    private void deleteNote() {
+        if (selectedIndex < 0) return;
+        String idToDelete = noteIds.get(selectedIndex);
+        notes.remove(selectedIndex);
+        noteIds.remove(selectedIndex);
+        selectedIndex = notes.isEmpty() ? -1 : Math.max(0, selectedIndex - 1);
+        refreshList();
+        if (selectedIndex >= 0) loadNote(selectedIndex);
+        else { titleField.setText(""); editor.setText(""); }
+
+        if (!idToDelete.isEmpty()) {
+            Thread t = new Thread(() -> {
+                try {
+                    new FirebaseAuthClient().deleteNote(idToDelete, SessionManager.getIdToken());
+                } catch (Exception e) { e.printStackTrace(); }
+            });
+            t.setDaemon(true);
+            t.start();
+        }
     }
 
     private void refreshList() {

@@ -9,10 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
@@ -187,6 +185,14 @@ public class AssignmentsPage {
         topbar.setStyle("-fx-background-color:#0f1117;-fx-border-color:#ffffff12;-fx-border-width:0 0 1 0;");
         Label title = new Label("Assignments & Announcements");
         title.setStyle("-fx-font-size:15px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:#e8eaf2;");
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Button addBtn = new Button("+ Add Assignment");
+        addBtn.setStyle("-fx-background-color:rgba(108,142,245,0.12);-fx-text-fill:#6c8ef5;-fx-font-size:12px;-fx-font-family:'Segoe UI';-fx-background-radius:8;-fx-padding:7 12 7 12;-fx-cursor:hand;-fx-border-color:rgba(108,142,245,0.2);-fx-border-width:1;-fx-border-radius:8;");
+        addBtn.setOnAction(e -> showAddAssignmentDialog());
+
         topbar.getChildren().add(title);
 
         VBox content = new VBox(14);
@@ -338,6 +344,66 @@ public class AssignmentsPage {
 
         row.getChildren().addAll(checkbox, statusBadge, info);
         return row;
+    }
+
+    private void showAddAssignmentDialog() {
+        javafx.stage.Stage dialog = new javafx.stage.Stage();
+        dialog.setTitle("Add Assignment");
+        dialog.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+
+        VBox form = new VBox(12);
+        form.setPadding(new Insets(24));
+        form.setStyle("-fx-background-color:#181c27;");
+        form.setPrefWidth(340);
+
+        Label heading = new Label("New Assignment");
+        heading.setStyle("-fx-font-size:15px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:#e8eaf2;");
+
+        TextField titleField = styledField("Title");
+        TextField courseField = styledField("Course (e.g. CSC325)");
+        TextField dueDateField = styledField("Due Date (yyyy-mm-dd)");
+
+        Label errorLbl = new Label("");
+        errorLbl.setStyle("-fx-text-fill:#f5697b;-fx-font-size:11px;-fx-font-family:'Segoe UI';");
+        errorLbl.setVisible(false);
+
+        Button saveBtn = new Button("Add Assignment");
+        saveBtn.setMaxWidth(Double.MAX_VALUE);
+        saveBtn.setStyle("-fx-background-color:#6c8ef5;-fx-text-fill:white;-fx-font-size:13px;-fx-font-family:'Segoe UI';-fx-background-radius:8;-fx-padding:9 0 9 0;-fx-cursor:hand;");
+
+        saveBtn.setOnAction(e -> {
+            String t  = titleField.getText().trim();
+            String c  = courseField.getText().trim();
+            String dd = dueDateField.getText().trim();
+
+            if (t.isEmpty() || c.isEmpty() || dd.isEmpty()) {
+                errorLbl.setText("Please fill in all fields.");
+                errorLbl.setVisible(true);
+                return;
+            }
+
+            // validate date format
+            try { LocalDate.parse(dd); } catch (Exception ex) {
+                errorLbl.setText("Date must be in yyyy-mm-dd format.");
+                errorLbl.setVisible(true);
+                return;
+            }
+
+            ITEMS.add(new String[]{"ASSIGNMENT", t, c, dd, "false", ""});
+            refreshList();
+            dialog.close();
+        });
+
+        form.getChildren().addAll(heading, titleField, courseField, dueDateField, errorLbl, saveBtn);
+        dialog.setScene(new javafx.scene.Scene(form));
+        dialog.show();
+    }
+
+    private TextField styledField(String prompt) {
+        TextField f = new TextField();
+        f.setPromptText(prompt);
+        f.setStyle("-fx-background-color:#1f2436;-fx-text-fill:#e8eaf2;-fx-prompt-text-fill:#5e6482;-fx-border-color:#ffffff20;-fx-border-width:1;-fx-border-radius:8;-fx-background-radius:8;-fx-padding:8 12 8 12;-fx-font-size:13px;-fx-font-family:'Segoe UI';");
+        return f;
     }
 
     public Scene getScene() { return scene; }

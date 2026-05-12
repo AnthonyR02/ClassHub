@@ -27,8 +27,9 @@ public class GpaController {
      * POST /api/gpa/records
      */
     @PostMapping("/records")
-    @RequireRole({"TEACHER", "ADMIN"})
-    public GradeRecord addGradeRecord(@Valid @RequestBody GradeRecordRequest request) {
+    public GradeRecord addGradeRecord(@Valid @RequestBody GradeRecordRequest request,
+                                      HttpServletRequest httpRequest) {
+        request.setUserId((String) httpRequest.getAttribute("uid"));
         return gpaService.addGradeRecord(request);
     }
 

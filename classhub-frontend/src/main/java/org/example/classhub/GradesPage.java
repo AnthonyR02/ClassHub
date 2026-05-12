@@ -10,10 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class GradesPage {
@@ -212,6 +209,15 @@ public class GradesPage {
         section.setStyle("-fx-background-color:#181c27;-fx-border-color:#ffffff12;-fx-border-width:1;-fx-border-radius:12;-fx-background-radius:12;");
         Label title = new Label("Grades by Class");
         title.setStyle("-fx-font-size:13px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:#e8eaf2;");
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        Button addGradeBtn = new Button("+ Add Grade");
+        addGradeBtn.setStyle("-fx-background-color:rgba(108,142,245,0.12);-fx-text-fill:#6c8ef5;-fx-font-size:11px;-fx-font-family:'Segoe UI';-fx-background-radius:6;-fx-padding:5 10 5 10;-fx-cursor:hand;-fx-border-color:rgba(108,142,245,0.2);-fx-border-width:1;-fx-border-radius:6;");
+        addGradeBtn.setOnAction(e -> showAddGradeDialog());
+        HBox titleRow = new HBox();
+        titleRow.setAlignment(Pos.CENTER_LEFT);
+        titleRow.getChildren().addAll(title, spacer, addGradeBtn);
+        section.getChildren().add(titleRow);
         section.getChildren().add(title);
         for (String[] cls : CLASSES) {
             HBox row = new HBox(12);
@@ -277,6 +283,104 @@ public class GradesPage {
                 avg >= 83 ? 3.0 : avg >= 80 ? 2.7 : avg >= 77 ? 2.3 :
                         avg >= 73 ? 2.0 : avg >= 70 ? 1.7 : 1.0;
         whatIfLabel.setText(String.format("%.1f", gpa));
+    }
+
+    private void showAddGradeDialog() {
+        javafx.stage.Stage dialog = new javafx.stage.Stage();
+        dialog.setTitle("Add Grade");
+        dialog.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+
+        VBox form = new VBox(12);
+        form.setPadding(new Insets(24));
+        form.setStyle("-fx-background-color:#181c27;");
+        form.setPrefWidth(340);
+
+        Label heading = new Label("Add Grade Record");
+        heading.setStyle("-fx-font-size:15px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:#e8eaf2;");
+
+        // course dropdown from SessionManager
+        javafx.scene.control.ComboBox<String> courseBox = new javafx.scene.control.ComboBox<>();
+        courseBox.setMaxWidth(Double.MAX_VALUE);
+        courseBox.setStyle("-fx-background-color:#1f2436;-fx-text-fill:#e8eaf2;-fx-font-size:13px;");
+        SessionManager.getCourses().forEach(c -> courseBox.getItems().add(c[0]));
+        if (!courseBox.getItems().isEmpty()) courseBox.setValue(courseBox.getItems().get(0));
+
+        javafx.scene.control.ComboBox<String> letterBox = new javafx.scene.control.ComboBox<>();
+        letterBox.getItems().addAll("A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D", "F");
+        letterBox.setValue("A");
+        letterBox.setMaxWidth(Double.MAX_VALUE);
+        letterBox.setStyle("-fx-background-color:#1f2436;-fx-text-fill:#e8eaf2;-fx-font-size:13px;");
+
+        Label errorLbl = new Label("");
+        errorLbl.setStyle("-fx-text-fill:#f5697b;-fx-font-size:11px;-fx-font-family:'Segoe UI';");
+        errorLbl.setVisible(false);
+
+        Button saveBtn = new Button("Save Grade");
+        saveBtn.setMaxWidth(Double.MAX_VALUE);
+        saveBtn.setStyle("-fx-background-color:#6c8ef5;-fx-text-fill:white;-fx-font-size:13px;-fx-font-family:'Segoe UI';-fx-background-radius:8;-fx-padding:9 0 9 0;-fx-cursor:hand;");
+
+        saveBtn.setOnAction(e -> {
+            if (courseBox.getValue() == null) {
+                errorLbl.setText("Please select a course.");
+                errorLbl.setVisible(true);
+                return;
+            }
+
+            String selectedCourse = courseBox.getValue();
+            String letter = letterBox.getValue();
+            double points = switch (letter) {
+                case "A"  -> 4.0; case "A-" -> 3.7;
+                case "B+" -> 3.3; case "B"  -> 3.0; case "B-" -> 2.7;
+                case "C+" -> 2.3; case "C"  -> 2.0; case "C-" -> 1.7;
+                case "D"  -> 1.0; default   -> 0.0;
+            };
+
+            // find courseId from SessionManager
+            String courseId = SessionManager.getCourses().stream()
+                    .filter(c -> c[0].equals(selectedCourse))
+                    .map(c -> c[2])
+                    .findFirst().orElse("");
+
+            if (courseId.isEmpty()) {
+                errorLbl.setText("Course ID not found. Try reloading.");
+                errorLbl.setVisible(true);
+                return;
+            }
+
+            saveBtn.setDisable(true);
+            saveBtn.setText("Saving...");
+            final double finalPoints = points;
+
+            Thread t = new Thread(() -> {
+                try {
+                    FirebaseAuthClient client = new FirebaseAuthClient();
+                    client.addGradeRecord(courseId, letter, finalPoints,
+                            SessionManager.getIdToken());
+                    Platform.runLater(() -> {
+                        dialog.close();
+                        loadGrades(); // refresh GPA
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    Platform.runLater(() -> {
+                        saveBtn.setDisable(false);
+                        saveBtn.setText("Save Grade");
+                        errorLbl.setText("Failed to save. Is the server running?");
+                        errorLbl.setVisible(true);
+                    });
+                }
+            });
+            t.setDaemon(true);
+            t.start();
+        });
+
+        form.getChildren().addAll(heading,
+                new Label("Course:") {{ setStyle("-fx-text-fill:#9097b4;-fx-font-size:12px;"); }},
+                courseBox,
+                new Label("Letter Grade:") {{ setStyle("-fx-text-fill:#9097b4;-fx-font-size:12px;"); }},
+                letterBox, errorLbl, saveBtn);
+        dialog.setScene(new javafx.scene.Scene(form));
+        dialog.show();
     }
 
     public Scene getScene() { return scene; }

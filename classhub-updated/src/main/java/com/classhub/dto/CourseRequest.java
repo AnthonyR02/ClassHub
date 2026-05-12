@@ -9,7 +9,7 @@ public class CourseRequest {
     @NotBlank private String courseName;
     @Min(1)   private int credits;
     @NotBlank private String semester;
-    @NotBlank private String userId;     // student being enrolled
+    private String userId;     // student being enrolled
     private String teacherId;            // teacher creating the course (set from token in service)
 
     public String getCourseCode() { return courseCode; }

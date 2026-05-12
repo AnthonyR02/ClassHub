@@ -2,6 +2,7 @@ package com.classhub.service;
 
 import com.classhub.dto.LoginRequest;
 import com.classhub.dto.RegisterRequest;
+import com.classhub.model.Role;
 import com.classhub.model.User;
 import com.classhub.repository.UserRepository;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,12 +39,12 @@ public class AuthService {
 
         // 2. Embed the role as a custom claim on the Firebase user
         //    This claim will appear in every ID token the client fetches after this point.
-        Map<String, Object> claims = Map.of("role", request.getRole().name());
+        Map<String, Object> claims = Map.of("role", request.getRole());
         FirebaseAuth.getInstance().setCustomUserClaims(firebaseUser.getUid(), claims);
 
         // 3. Save the profile (no password) to Firestore
         User user = new User(firebaseUser.getUid(), request.getFullName(),
-                             request.getEmail(), request.getRole());
+                             request.getEmail(), Role.valueOf(request.getRole()));
         return userRepository.save(user);
     }
 

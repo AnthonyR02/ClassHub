@@ -9,7 +9,7 @@ public class RegisterRequest {
     @NotBlank private String fullName;
     @Email @NotBlank private String email;
     @NotBlank private String password;
-    @NotNull private Role role;
+    @NotNull private String role;
 
     public String getFullName() { return fullName; }
     public void setFullName(String v) { fullName = v; }
@@ -17,6 +17,6 @@ public class RegisterRequest {
     public void setEmail(String v) { email = v; }
     public String getPassword() { return password; }
     public void setPassword(String v) { password = v; }
-    public Role getRole() { return role; }
-    public void setRole(Role v) { role = v; }
+    public String getRole() { return role; }
+    public void setRole(String v) { role = v; }
 }

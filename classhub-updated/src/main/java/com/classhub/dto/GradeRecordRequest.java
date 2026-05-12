@@ -9,7 +9,7 @@ public class GradeRecordRequest {
     @NotBlank private String letterGrade;
     @NotNull @DecimalMin("0.0") @DecimalMax("4.0") private Double gradePoints;
     @NotBlank private String courseId;
-    @NotBlank private String userId;
+    private String userId;
 
     public String getLetterGrade() { return letterGrade; }
     public void setLetterGrade(String v) { letterGrade = v; }

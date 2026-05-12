@@ -21,12 +21,9 @@ public class CourseService {
 
     /** Teacher creates a course and enrolls a student. */
     public Course createCourse(CourseRequest request) {
-        userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("Student not found."));
-
         Course course = new Course(null, request.getCourseCode(), request.getCourseName(),
                 request.getCredits(), request.getSemester(), request.getUserId());
-        course.setTeacherId(request.getTeacherId()); // stamped from the controller using uid
+        course.setTeacherId(request.getTeacherId());
         return courseRepository.save(course);
     }
 

@@ -28,8 +28,8 @@ public class TaskController {
      * POST /api/assignments
      */
     @PostMapping
-    @RequireRole({"TEACHER", "ADMIN"})
-    public Assignment createAssignment(@Valid @RequestBody AssignmentRequest request) {
+    public Assignment createAssignment(@Valid @RequestBody AssignmentRequest request, HttpServletRequest httpRequest) {
+        request.setUserId((String) httpRequest.getAttribute("uid"));
         return taskService.createAssignment(request);
     }
 

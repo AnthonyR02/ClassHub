@@ -1,14 +1,20 @@
 package org.example.classhub;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Dashboard {
 
@@ -21,15 +27,12 @@ public class Dashboard {
     private static final String ACCENT  = "#6c8ef5";
     private static final String ROSE    = "#f5697b";
     private static final String SURFACE2= "#1f2436";
-    private static final String[][] CLASSES = {
-            {"Operating Systems",      "MWF 9:00 AM"},
-            {"Data Structures II",     "TTH 10:30 AM"},
-            {"Advanced Programming",   "MWF 11:00 AM"},
-            {"Software Engineering",   "TTH 1:00 PM"},
-            {"Computer Networks",      "W 2:00 PM"},
-            {"Discrete Mathematics",   "MWF 2:00 PM"},
-    };
+    private static String[][] CLASSES =new String[0][];
 
+    private Label gpaValue;
+    private Label pendingValue;
+
+    private VBox classGrid;
     private Scene scene;
 
     public Dashboard(Stage stage) {
@@ -37,6 +40,7 @@ public class Dashboard {
         root.setStyle("-fx-background-color:" + BG + ";");
         root.getChildren().addAll(buildSidebar(stage), buildMain());
         scene = new Scene(root, 900, 600);
+        loadDashboard();
     }
 
     private VBox buildSidebar(Stage stage) {
@@ -162,15 +166,16 @@ public class Dashboard {
 
     private HBox buildStatRow() {
         HBox row = new HBox(12);
-        VBox c1 = statCard("GPA", "3.8", "#6c8ef5");
-        VBox c2 = statCard("Pending Tasks", "6", "#f5697b");
-        VBox c3 = statCard("Avg Grade", "86%", "#3ecfb0");
-        VBox c4 = statCard("Attendance", "91%", "#f5a623");
-        for (VBox c : new VBox[]{c1, c2, c3, c4}) {
+        VBox c1 = statCard("GPA", "...", "#6c8ef5");
+        gpaValue = (Label) c1.getChildren().get(1);
+        VBox c2 = statCard("Pending Tasks", "...", "#f5697b");
+        pendingValue = (Label) c2.getChildren().get(1);
+
+        for (VBox c : new VBox[]{c1, c2}) {
             HBox.setHgrow(c, Priority.ALWAYS);
             c.setMaxWidth(Double.MAX_VALUE);
         }
-        row.getChildren().addAll(c1, c2, c3, c4);
+        row.getChildren().addAll(c1, c2);
         return row;
     }
 
@@ -190,12 +195,24 @@ public class Dashboard {
         VBox outerCard = new VBox(12);
         outerCard.setPadding(new Insets(18, 20, 18, 20));
         outerCard.setStyle("-fx-background-color:" + SURFACE + ";-fx-border-color:" + BORDER + ";-fx-border-width:1;-fx-border-radius:12;-fx-background-radius:12;");
+
         Label title = new Label("My Classes");
         title.setStyle("-fx-font-size:13px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:" + TEXT + ";");
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Button addBtn = new Button("+ Add Course");
+        addBtn.setStyle("-fx-background-color:rgba(108,142,245,0.12);-fx-text-fill:#6c8ef5;-fx-font-size:11px;-fx-font-family:'Segoe UI';-fx-background-radius:6;-fx-padding:5 10 5 10;-fx-cursor:hand;-fx-border-color:rgba(108,142,245,0.2);-fx-border-width:1;-fx-border-radius:6;");
+        addBtn.setOnAction(e -> showAddCourseDialog());
+
+        HBox titleRow = new HBox();
+        titleRow.setAlignment(Pos.CENTER_LEFT);
+        titleRow.getChildren().addAll(title, spacer, addBtn);
 
         int cols = 2;
         int rows = (int) Math.ceil(CLASSES.length / (double) cols);
-        VBox grid = new VBox(10);
+        classGrid = new VBox(10);
+        VBox grid = classGrid;
         VBox.setVgrow(grid, Priority.ALWAYS);
         for (int r = 0; r < rows; r++) {
             HBox row = new HBox(10);
@@ -216,7 +233,7 @@ public class Dashboard {
             }
             grid.getChildren().add(row);
         }
-        outerCard.getChildren().addAll(title, grid);
+        outerCard.getChildren().addAll(titleRow, grid);
         return outerCard;
     }
 
@@ -235,6 +252,163 @@ public class Dashboard {
 
         card.getChildren().addAll(nameLbl, timeLbl);
         return card;
+    }
+
+    private void showAddCourseDialog() {
+        javafx.stage.Stage dialog = new javafx.stage.Stage();
+        dialog.setTitle("Add Course");
+        dialog.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+
+        VBox form = new VBox(12);
+        form.setPadding(new Insets(24));
+        form.setStyle("-fx-background-color:#181c27;");
+        form.setPrefWidth(340);
+
+        Label heading = new Label("New Course");
+        heading.setStyle("-fx-font-size:15px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:#e8eaf2;");
+
+        TextField nameField  = styledField("Course Name (e.g. Software Engineering)");
+        TextField codeField  = styledField("Course Code (e.g. CSC325)");
+        TextField schedField = styledField("Schedule (e.g. MWF 9:00 AM)");
+
+        Label errorLbl = new Label("");
+        errorLbl.setStyle("-fx-text-fill:#f5697b;-fx-font-size:11px;-fx-font-family:'Segoe UI';");
+        errorLbl.setVisible(false);
+
+        Button saveBtn = new Button("Add Course");
+        saveBtn.setMaxWidth(Double.MAX_VALUE);
+        saveBtn.setStyle("-fx-background-color:#6c8ef5;-fx-text-fill:white;-fx-font-size:13px;-fx-font-family:'Segoe UI';-fx-background-radius:8;-fx-padding:9 0 9 0;-fx-cursor:hand;");
+
+        saveBtn.setOnAction(e -> {
+            String name  = nameField.getText().trim();
+            String code  = codeField.getText().trim();
+            String sched = schedField.getText().trim();
+
+            if (name.isEmpty() || code.isEmpty()) {
+                errorLbl.setText("Name and code are required.");
+                errorLbl.setVisible(true);
+                return;
+            }
+
+            saveBtn.setDisable(true);
+            saveBtn.setText("Saving...");
+
+            Thread thread = new Thread(() -> {
+                try {
+                    FirebaseAuthClient client = new FirebaseAuthClient();
+                    JsonNode result = client.createCourse(
+                            name, code, "Spring 2026", 3,
+                            SessionManager.getIdToken()
+                    );
+
+                    String newId = result.path("id").asText("");
+                    List<String[]> updatedCourses = new ArrayList<>(SessionManager.getCourses());
+                    updatedCourses.add(new String[]{name, code, newId});
+                    SessionManager.setCourses(updatedCourses);
+
+                    CLASSES = updatedCourses.stream()
+                            .map(c -> new String[]{c[0], sched.isEmpty() ? c[1] : sched})
+                            .toArray(String[][]::new);
+
+                    Platform.runLater(() -> {
+                        refreshClassGrid();
+                        dialog.close();
+                    });
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    Platform.runLater(() -> {
+                        saveBtn.setDisable(false);
+                        saveBtn.setText("Add Course");
+                        errorLbl.setText("Failed to save. Is the server running?");
+                        errorLbl.setVisible(true);
+                    });
+                }
+            });
+            thread.setDaemon(true);
+            thread.start();
+        });
+
+        form.getChildren().addAll(heading, nameField, codeField, schedField, errorLbl, saveBtn);
+        dialog.setScene(new javafx.scene.Scene(form));
+        dialog.show();
+    }
+
+    private TextField styledField(String prompt) {
+        TextField f = new TextField();
+        f.setPromptText(prompt);
+        f.setStyle("-fx-background-color:#1f2436;-fx-text-fill:#e8eaf2;-fx-prompt-text-fill:#5e6482;-fx-border-color:#ffffff20;-fx-border-width:1;-fx-border-radius:8;-fx-background-radius:8;-fx-padding:8 12 8 12;-fx-font-size:13px;-fx-font-family:'Segoe UI';");
+        return f;
+    }
+
+    private void refreshClassGrid() {
+        classGrid.getChildren().clear();
+        int cols = 2;
+        int rows = (int) Math.ceil(CLASSES.length / (double) cols);
+        for (int r = 0; r < rows; r++) {
+            HBox row = new HBox(10);
+            for (int c = 0; c < cols; c++) {
+                int idx = r * cols + c;
+                if (idx < CLASSES.length) {
+                    VBox card = classCard(CLASSES[idx][0], CLASSES[idx][1]);
+                    HBox.setHgrow(card, Priority.ALWAYS);
+                    card.setMaxWidth(Double.MAX_VALUE);
+                    row.getChildren().add(card);
+                } else {
+                    Region filler = new Region();
+                    HBox.setHgrow(filler, Priority.ALWAYS);
+                    row.getChildren().add(filler);
+                }
+            }
+            classGrid.getChildren().add(row);
+        }
+    }
+
+    private void loadDashboard() {
+        Thread t = new Thread(() -> {
+            try {
+                FirebaseAuthClient client = new FirebaseAuthClient();
+
+                // load courses
+                JsonNode coursesJson = client.getCourses(
+                        SessionManager.getUserId(), SessionManager.getIdToken());
+                List<String[]> courseList = new ArrayList<>();
+                for (JsonNode c : coursesJson) {
+                    courseList.add(new String[]{
+                            c.path("courseName").asText("Unknown"),
+                            c.path("courseCode").asText(""),
+                            c.path("id").asText()
+                    });
+                }
+                SessionManager.setCourses(courseList);
+                CLASSES = courseList.stream()
+                        .map(c -> new String[]{c[0], c[1]})
+                        .toArray(String[][]::new);
+
+                // load GPA
+                JsonNode gpa = client.getGpaSummary(
+                        SessionManager.getUserId(), SessionManager.getIdToken());
+                double gpaVal = gpa.path("gpa").asDouble(0.0);
+
+                // count pending assignments
+                JsonNode assignments = client.getAssignments(
+                        SessionManager.getUserId(), SessionManager.getIdToken());
+                long pending = 0;
+                for (JsonNode a : assignments) {
+                    if (!a.path("completed").asBoolean()) pending++;
+                }
+                final long pendingCount = pending;
+
+                Platform.runLater(() -> {
+                    gpaValue.setText(String.format("%.2f", gpaVal));
+                    pendingValue.setText(String.valueOf(pendingCount));
+                    refreshClassGrid();
+                });
+
+            } catch (Exception e) { e.printStackTrace(); }
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
     public Scene getScene() {

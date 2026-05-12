@@ -1,6 +1,8 @@
 package org.example.classhub;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -20,9 +22,9 @@ public class SmartCalendarUI {
 
     private Scene scene;
 
-    private static final int TODAY_YEAR  = 2026;
-    private static final int TODAY_MONTH = 4;
-    private static final int TODAY_DAY   = 15;
+    private static final int TODAY_YEAR  = LocalDate.now().getYear();
+    private static final int TODAY_MONTH = LocalDate.now().getMonthValue();
+    private static final int TODAY_DAY   = LocalDate.now().getDayOfMonth();
 
     private int currentYear  = TODAY_YEAR;
     private int currentMonth = TODAY_MONTH;
@@ -33,12 +35,6 @@ public class SmartCalendarUI {
     private Label monthLabel;
 
     private static final Map<String, List<String[]>> EVENTS = new HashMap<>();
-    static {
-        se(2026,4,2,"CS HW","10:00");  se(2026,4,3,"CS HW","09:00");  se(2026,4,3,"CS HW","14:00");
-        se(2026,4,5,"CS HW","08:00");  se(2026,4,5,"CS HW","12:00");  se(2026,4,5,"CS HW","15:00");
-        se(2026,4,8,"CS HW","11:00");  se(2026,4,10,"CS HW","09:00"); se(2026,4,10,"CS HW","13:00");
-        se(2026,4,22,"CS HW","10:00"); se(2026,4,22,"CS HW","15:00"); se(2026,4,30,"CS HW","12:00");
-    }
 
     private static String eKey(int y, int m, int d) { return y + "-" + m + "-" + d; }
 
@@ -74,6 +70,7 @@ public class SmartCalendarUI {
         root.setStyle("-fx-background-color:#0f1117;");
         root.getChildren().addAll(buildSidebar(stage), buildMain());
         scene = new Scene(root, 900, 600);
+        loadAssignmentsIntoCalendar();
     }
 
     private VBox buildSidebar(Stage stage) {
@@ -560,6 +557,30 @@ public class SmartCalendarUI {
             cell.getChildren().add(bar);
         }
         return cell;
+    }
+
+    private void loadAssignmentsIntoCalendar() {
+        Thread t = new Thread(() -> {
+            try {
+                FirebaseAuthClient client = new FirebaseAuthClient();
+                JsonNode assignments = client.getAssignments(
+                        SessionManager.getUserId(), SessionManager.getIdToken());
+                for (JsonNode a : assignments) {
+                    String dueDate = a.path("dueDate").asText("");
+                    String title   = a.path("title").asText("Assignment");
+                    if (!dueDate.isBlank()) {
+                        try {
+                            LocalDate date = LocalDate.parse(dueDate);
+                            putEvent(eKey(date.getYear(), date.getMonthValue(),
+                                    date.getDayOfMonth()), title, "23:59");
+                        } catch (Exception ignored) {}
+                    }
+                }
+                Platform.runLater(this::rebuildGrid);
+            } catch (Exception e) { e.printStackTrace(); }
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
     public Scene getScene() { return scene; }
