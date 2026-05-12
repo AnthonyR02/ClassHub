@@ -87,12 +87,17 @@ public class LoginPage {
                 // show success
                 errorLabel.setVisible(false);
                 errorLabel.setManaged(false);
+                ClassHubApplication.dashboardScene = new Dashboard(stage).getScene();
+                ClassHubApplication.calendarScene = new SmartCalendarUI(stage).getScene();
+                ClassHubApplication.assignmentsScene = new AssignmentsPage(stage).getScene();
+                ClassHubApplication.gradesScene = new GradesPage(stage).getScene();
+                ClassHubApplication.notesScene = new NotesPage(stage).getScene();
                 stage.setScene(ClassHubApplication.dashboardScene);
 
             } catch (Exception ex) {
                 ex.printStackTrace();
                 String message = ex.getMessage();
-                if (message.contains("INVALID_EMAIL") || message.contains("INVALID_PASSWORD")) {
+                if (message.contains("INVALID_EMAIL") || message.contains("INVALID_PASSWORD") || message.contains("INVALID_LOGIN_CREDENTIALS")) {
                     errorLabel.setText("Invalid email or password");
                 } else if (message.contains("TOO_MANY_ATTEMPTS")) {
                     errorLabel.setText("Too many attempts, please try again later");

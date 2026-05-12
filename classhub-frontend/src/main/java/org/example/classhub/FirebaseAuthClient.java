@@ -78,7 +78,10 @@ public class FirebaseAuthClient {
         JsonNode user = mapper.readTree(response.body());
 
         // store in session
-        SessionManager.login(user.path("id").asText(), user.path("fullName").asText(), user.path("role").asText(), user.path("email").asText()
+        SessionManager.login(user.path("id").asText(),
+                user.path("fullName").asText(),
+                user.path("role").asText(),
+                user.path("email").asText()
         );
 
         return user;
