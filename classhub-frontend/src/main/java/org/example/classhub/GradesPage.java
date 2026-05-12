@@ -1,6 +1,8 @@
 package org.example.classhub;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -16,25 +18,58 @@ import javafx.stage.Stage;
 
 public class GradesPage {
 
-    private static final String[][] CLASSES = {
-            {"Operating Systems",     "91", "A"},
-            {"Data Structures II",    "88", "A"},
-            {"Advanced Programming",  "84", "B"},
-            {"Software Engineering",  "90", "A"},
-            {"Computer Networks",     "78", "C"},
-            {"Discrete Mathematics",  "82", "B"},
-    };
+    private String[][] CLASSES = new String[0][];
 
     private Scene scene;
 
     private Label whatIfLabel;
-    private final TextField[] whatIfFields = new TextField[CLASSES.length];
+    private TextField[] whatIfFields = new TextField[0];
+
+    private Label currentGpaValue;
+    private Label avgGradeValue;
+    private VBox classSection;
+    private VBox whatIfSection;
+    private VBox contentBox;
 
     public GradesPage(Stage stage) {
         HBox root = new HBox(0);
         root.setStyle("-fx-background-color:#0f1117;");
         root.getChildren().addAll(buildSidebar(stage), buildMain());
         scene = new Scene(root, 900, 600);
+        loadGrades();
+    }
+
+    private void loadGrades() {
+        Thread thread = new Thread(() -> {
+            try {
+                FirebaseAuthClient client = new FirebaseAuthClient();
+                JsonNode summary = client.getGpaSummary(
+                        SessionManager.getUserId(),
+                        SessionManager.getIdToken()
+                );
+
+                double gpa         = summary.path("gpa").asDouble(0.0);
+                int    totalCourses = summary.path("courseCount").asInt(0);
+                int    totalCredits = summary.path("totalCredits").asInt(0);
+
+                // also fetch grade records to build per-class rows
+                // for now update the summary cards
+                Platform.runLater(() -> {
+                    currentGpaValue.setText(String.format("%.2f", gpa));
+                    whatIfLabel.setText(String.format("%.2f", gpa));
+                    avgGradeValue.setText(totalCredits + " cr");
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Platform.runLater(() -> {
+                    currentGpaValue.setText("--");
+                    avgGradeValue.setText("--");
+                });
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
     }
 
     private VBox buildSidebar(Stage stage) {
@@ -112,12 +147,14 @@ public class GradesPage {
         title.setStyle("-fx-font-size:15px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:#e8eaf2;");
         topbar.getChildren().add(title);
 
-        VBox content = new VBox(16);
+        contentBox = new VBox(16);
+        VBox content = contentBox;
         content.setPadding(new Insets(20));
         content.setStyle("-fx-background-color:#0f1117;");
 
         HBox cards = new HBox(12);
         VBox currentGpa = statCard("Current GPA", "3.8", "#6c8ef5");
+        currentGpaValue = (Label) currentGpa.getChildren().get(1);
         VBox whatIfGpa = new VBox(6);
         whatIfGpa.setPadding(new Insets(14, 16, 14, 16));
         whatIfGpa.setStyle("-fx-background-color:#181c27;-fx-border-color:#ffffff12;-fx-border-width:1;-fx-border-radius:12;-fx-background-radius:12;");
@@ -127,6 +164,7 @@ public class GradesPage {
         whatIfLabel.setStyle("-fx-font-size:26px;-fx-font-weight:700;-fx-font-family:'Segoe UI';-fx-text-fill:#3ecfb0;");
         whatIfGpa.getChildren().addAll(whatIfTitle, whatIfLabel);
         VBox avgGrade = statCard("Avg Grade", "86%", "#f5a623");
+        avgGradeValue = (Label) avgGrade.getChildren().get(1);
         for (VBox c : new VBox[]{currentGpa, whatIfGpa, avgGrade}) {
             HBox.setHgrow(c, Priority.ALWAYS);
             c.setMaxWidth(Double.MAX_VALUE);

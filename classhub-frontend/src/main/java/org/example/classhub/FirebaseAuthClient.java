@@ -108,4 +108,20 @@ public class FirebaseAuthClient {
 
         httpClient.send(request, HttpResponse.BodyHandlers.ofString());
     }
+
+    public JsonNode getGpaSummary(String userId, String idToken) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/gpa/summary/" + userId))
+                .header("Authorization", "Bearer " + idToken)
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,
+                HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new Exception("Failed to load GPA summary");
+        }
+        return mapper.readTree(response.body());
+    }
 }
