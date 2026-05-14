@@ -31,10 +31,12 @@ Launching the Application
 4.	Enter your email and password to log in. 
 5.	New users can create an account using the Register button
 
-   <img width="1856" height="1344" alt="login" src="https://github.com/user-attachments/assets/76f1406f-ed9f-4b24-9dd2-99a0e9da94f6" />
+<img width="910" height="714" alt="Desktop 2026-05-14 4-35-21 PM" src="https://github.com/user-attachments/assets/f07caf1f-1687-4244-95d2-49b5ff745c87" />
+
+<img width="910" height="714" alt="Desktop 2026-05-14 4-37-41 PM" src="https://github.com/user-attachments/assets/d656ce0b-8c8a-4d5d-97d6-93b75c6ed255" />
 
 
-   Dashboard<img width="2142" height="1884" alt="Dashboard" src="https://github.com/user-attachments/assets/e22d26fb-1826-4293-b6bf-6b5acc860bba" />
+  
 
 After logging in, users are redirected to the Dashboard.
 The Dashboard provides:
