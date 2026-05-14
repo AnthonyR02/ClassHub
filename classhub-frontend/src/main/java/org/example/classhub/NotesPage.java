@@ -165,6 +165,7 @@ public class NotesPage {
     }
 
     private void loadNotes() {
+        if (SessionManager.isDevMode()) return; // dev bypass
         Thread t = new Thread(() -> {
             try {
                 FirebaseAuthClient client = new FirebaseAuthClient();

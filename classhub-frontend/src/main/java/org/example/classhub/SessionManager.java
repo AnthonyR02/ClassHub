@@ -43,6 +43,11 @@ public class SessionManager {
     public static String getIdToken() {
         return idToken;
     }
+
+    /** Returns true when running in dev-bypass mode (no real Firebase session). */
+    public static boolean isDevMode() {
+        return "dev-token-bypass".equals(idToken);
+    }
     public static void setCourses(java.util.List<String[]> c) { courses = c; }
     public static java.util.List<String[]> getCourses() { return courses; }
 

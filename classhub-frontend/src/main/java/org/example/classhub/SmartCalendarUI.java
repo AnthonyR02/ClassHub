@@ -47,6 +47,15 @@ public class SmartCalendarUI {
 
     private void addEvent(int day, String title, String time) { putEvent(eKey(currentYear, currentMonth, day), title, time); }
 
+    /**
+     * Called by AssignmentsPage when a new assignment or announcement is created.
+     * Adds it to the shared EVENTS map so it shows on the calendar immediately.
+     * "type" is shown as the time label (e.g. "Assignment" or "Announcement").
+     */
+    public static void addExternalEvent(int year, int month, int day, String title, String type) {
+        putEvent(eKey(year, month, day), title, type);
+    }
+
     private List<String[]> getEvents(int day) {
         return new ArrayList<>(EVENTS.getOrDefault(eKey(currentYear, currentMonth, day), new ArrayList<>()));
     }
@@ -560,6 +569,7 @@ public class SmartCalendarUI {
     }
 
     private void loadAssignmentsIntoCalendar() {
+        if (SessionManager.isDevMode()) return; // dev bypass
         Thread t = new Thread(() -> {
             try {
                 FirebaseAuthClient client = new FirebaseAuthClient();

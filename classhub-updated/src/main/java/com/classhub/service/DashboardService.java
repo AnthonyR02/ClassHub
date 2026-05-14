@@ -30,7 +30,7 @@ public class DashboardService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
 
-        double gpa = gpaService.calculateGpa(userId).getCurrentGpa();
+        double gpa = gpaService.calculateGpa(userId).getGpa();
         String today = LocalDate.now().toString();
         List<Assignment> upcoming = assignmentRepository.findTop5UpcomingByUserId(userId, today);
         long pending = assignmentRepository.findByUserIdAndCompletedFalse(userId).size();

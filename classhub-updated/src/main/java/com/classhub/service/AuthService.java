@@ -1,13 +1,15 @@
 package com.classhub.service;
 
 import com.classhub.dto.LoginRequest;
+import com.classhub.dto.LoginResponse;
 import com.classhub.dto.RegisterRequest;
 import com.classhub.model.Role;
 import com.classhub.model.User;
 import com.classhub.repository.UserRepository;
+import com.classhub.security.JwtUtil;
+import com.classhub.security.PasswordUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import org.springframework.stereotype.Service;
 
@@ -17,64 +19,70 @@ import java.util.Map;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final JwtUtil        tokenStore;
 
-    public AuthService(UserRepository userRepository) {
+    public AuthService(UserRepository userRepository, JwtUtil tokenStore) {
         this.userRepository = userRepository;
+        this.tokenStore     = tokenStore;
     }
 
     /**
-     * Creates a new user in Firebase Authentication AND saves their profile to Firestore.
-     * The user's role is embedded as a Firebase custom claim so every ID token
-     * the client receives will carry the role — no extra Firestore lookup needed
-     * during request authorization.
+     * Register: create Firebase Auth account (so email is tracked),
+     * store hashed password in Firestore, issue session token.
      */
-    public User register(RegisterRequest request) throws FirebaseAuthException {
-        // 1. Create the user in Firebase Auth
+    public LoginResponse register(RegisterRequest request) throws FirebaseAuthException {
+        String role = request.getRole() != null
+                ? request.getRole().trim().toUpperCase() : "STUDENT";
+
+        // Create the Firebase Auth account (for email tracking only)
         UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest()
                 .setEmail(request.getEmail())
                 .setPassword(request.getPassword())
                 .setDisplayName(request.getFullName());
 
         UserRecord firebaseUser = FirebaseAuth.getInstance().createUser(createRequest);
+        FirebaseAuth.getInstance().setCustomUserClaims(
+                firebaseUser.getUid(), Map.of("role", role));
 
-        // 2. Embed the role as a custom claim on the Firebase user
-        //    This claim will appear in every ID token the client fetches after this point.
-        Map<String, Object> claims = Map.of("role", request.getRole());
-        FirebaseAuth.getInstance().setCustomUserClaims(firebaseUser.getUid(), claims);
-
-        // 3. Save the profile (no password) to Firestore
+        // Save profile + hashed password to Firestore
         User user = new User(firebaseUser.getUid(), request.getFullName(),
-                             request.getEmail(), Role.valueOf(request.getRole()));
-        return userRepository.save(user);
+                             request.getEmail(), Role.valueOf(role));
+        user.setPasswordHash(PasswordUtil.hash(request.getPassword()));
+        userRepository.save(user);
+
+        String token = tokenStore.generateToken(firebaseUser.getUid(), role);
+        return new LoginResponse(token, user);
     }
 
     /**
-     * Verifies a Firebase ID token sent from the client after they sign in.
-     * Returns the Firestore user profile plus the role decoded from the token claims.
+     * Login: look up user by email in Firestore, verify password hash locally.
+     * Zero Firebase REST calls — no rate limits possible.
      */
-    public User verifyToken(String idToken) throws FirebaseAuthException {
-        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
-        String uid = decodedToken.getUid();
+    public LoginResponse login(LoginRequest request) {
+        // Find user by email in Firestore
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
 
-        User user = userRepository.findById(uid)
-                .orElseThrow(() -> new IllegalArgumentException("User profile not found for UID: " + uid));
-
-        // Ensure the in-memory role matches the claim (handles edge cases where
-        // an admin updated the role directly in Firebase Console)
-        Object roleClaim = decodedToken.getClaims().get("role");
-        if (roleClaim != null) {
-            user.setRole(roleClaim.toString());
+        // Verify password against stored hash
+        if (user.getPasswordHash() == null ||
+                !PasswordUtil.verify(request.getPassword(), user.getPasswordHash())) {
+            throw new IllegalArgumentException("Invalid email or password.");
         }
 
-        return user;
+        String token = tokenStore.generateToken(user.getId(), user.getRole());
+        return new LoginResponse(token, user);
     }
 
-    /** @deprecated Login is handled client-side via the Firebase client SDK. */
-    @Deprecated
-    public User login(LoginRequest request) {
-        throw new UnsupportedOperationException(
-            "Login is handled on the client via the Firebase client SDK. " +
-            "Send the resulting ID token to POST /api/auth/verify instead."
-        );
+    /**
+     * Validate a session token and return the user profile.
+     */
+    public User verifyToken(String token) {
+        String[] data = tokenStore.validateToken(token);
+        String uid    = data[0];
+        String role   = data[1];
+        User user = userRepository.findById(uid)
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+        user.setRole(role);
+        return user;
     }
 }

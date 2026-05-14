@@ -1,8 +1,5 @@
 package com.classhub.security;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,21 +10,20 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Verifies the Firebase ID token on every protected request and attaches
- * the caller's UID and role as request attributes for downstream use.
- *
- * Request attributes set after successful verification:
- *   - "uid"  : String  — Firebase UID of the authenticated user
- *   - "role" : String  — role custom claim (STUDENT, TEACHER, or ADMIN)
- */
 @Component
 public class FirebaseAuthFilter extends OncePerRequestFilter {
 
     private static final List<String> PUBLIC_PATHS = List.of(
             "/api/auth/register",
+            "/api/auth/login",
             "/api/auth/verify"
     );
+
+    private final JwtUtil tokenStore;
+
+    public FirebaseAuthFilter(JwtUtil tokenStore) {
+        this.tokenStore = tokenStore;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -49,21 +45,15 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        String idToken = authHeader.substring(7);
+        String token = authHeader.substring(7);
 
         try {
-            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
-
-            request.setAttribute("uid", decodedToken.getUid());
-
-            Object roleClaim = decodedToken.getClaims().get("role");
-            request.setAttribute("role", roleClaim != null ? roleClaim.toString() : "");
-
+            String[] data = tokenStore.validateToken(token);
+            request.setAttribute("uid",  data[0]);
+            request.setAttribute("role", data[1]);
             filterChain.doFilter(request, response);
-
-        } catch (FirebaseAuthException e) {
-            sendError(response, HttpServletResponse.SC_UNAUTHORIZED,
-                      "Invalid or expired Firebase token.");
+        } catch (Exception e) {
+            sendError(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired token.");
         }
     }
 

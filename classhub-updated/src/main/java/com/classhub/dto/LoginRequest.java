@@ -1,14 +1,10 @@
 package com.classhub.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-
 public class LoginRequest {
-    @Email @NotBlank private String email;
-    @NotBlank private String password;
-
-    public String getEmail() { return email; }
-    public void setEmail(String v) { email = v; }
+    private String email;
+    private String password;
+    public String getEmail()    { return email; }
+    public void setEmail(String e) { email = e; }
     public String getPassword() { return password; }
-    public void setPassword(String v) { password = v; }
+    public void setPassword(String p) { password = p; }
 }
