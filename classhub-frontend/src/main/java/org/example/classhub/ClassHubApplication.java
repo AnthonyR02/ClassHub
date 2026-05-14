@@ -11,25 +11,37 @@ public class ClassHubApplication extends Application {
 
     public static Scene loginScene, dashboardScene, calendarScene, assignmentsScene, gradesScene, notesScene;
 
-    @Override
-    public void start(Stage stage) {
+    // Called after login succeeds — builds all scenes with a valid session
+    public static void buildAppScenes(Stage stage) {
         Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
         double w = bounds.getWidth();
         double h = bounds.getHeight();
 
-        loginScene       = new LoginPage(stage).getScene();
         dashboardScene   = new Dashboard(stage).getScene();
         calendarScene    = new SmartCalendarUI(stage).getScene();
         assignmentsScene = new AssignmentsPage(stage).getScene();
         gradesScene      = new GradesPage(stage).getScene();
         notesScene       = new NotesPage(stage).getScene();
 
-        // size every scene root to fill the screen
-        for (Scene s : new Scene[]{loginScene, dashboardScene, calendarScene, assignmentsScene, gradesScene, notesScene}) {
+        for (Scene s : new Scene[]{dashboardScene, calendarScene, assignmentsScene, gradesScene, notesScene}) {
             if (s.getRoot() instanceof Region r) {
                 r.setPrefWidth(w);
                 r.setPrefHeight(h);
             }
+        }
+    }
+
+    @Override
+    public void start(Stage stage) {
+        Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+        double w = bounds.getWidth();
+        double h = bounds.getHeight();
+
+        // Only build the login scene at startup — no session yet
+        loginScene = new LoginPage(stage).getScene();
+        if (loginScene.getRoot() instanceof Region r) {
+            r.setPrefWidth(w);
+            r.setPrefHeight(h);
         }
 
         stage.setScene(loginScene);
@@ -41,7 +53,6 @@ public class ClassHubApplication extends Application {
         stage.setMaximized(true);
         stage.setResizable(true);
 
-        // prevent snap-back to small size when switching scenes
         stage.maximizedProperty().addListener((obs, wasMax, isMax) -> {
             if (!isMax) stage.setMaximized(true);
         });

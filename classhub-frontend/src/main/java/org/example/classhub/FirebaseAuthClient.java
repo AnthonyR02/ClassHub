@@ -9,245 +9,199 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 /**
- * Handles the two-step Firebase login flow:
- * First step - exchange email+password for a Firebase ID token
- * Second step - sends that token to Spring Boot backend to get the user profile
+ * All auth is now handled by the Spring Boot backend using JWT.
+ * No Firebase client SDK calls — no rate limits, no propagation delays.
  */
 public class FirebaseAuthClient {
 
-    // Get this from Firebase Console → Project Settings → General → Web API Key
-    private static final String FIREBASE_API_KEY = "AIzaSyDeTUF_bA-J2kgtrMBd7bACKU5HfZCrxvg";
-    private static final String FIREBASE_SIGNIN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + FIREBASE_API_KEY;
-    private static final String BACKEND_VERIFY_URL = "http://localhost:8080/api/auth/verify";
+    private static final String BASE = "http://localhost:8080";
 
-    private final HttpClient httpClient = HttpClient.newHttpClient();
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final HttpClient   httpClient = HttpClient.newHttpClient();
+    private final ObjectMapper mapper     = new ObjectMapper();
 
-    /**
-     * Step 1: Signs in with Firebase and returns an ID token.
-     * Throws an exception with a readable message if credentials are wrong.
-     */
-    public String signIn(String email, String password) throws Exception {
-        String body = String.format(
-                "{\"email\":\"%s\",\"password\":\"%s\",\"returnSecureToken\":true}",
-                email, password
-        );
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(FIREBASE_SIGNIN_URL))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(body))
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request,
-                HttpResponse.BodyHandlers.ofString());
-
-        JsonNode json = mapper.readTree(response.body());
-
-        if (response.statusCode() != 200) {
-            // Firebase returns a readable error message
-            String errorMessage = json.path("error").path("message").asText("Invalid credentials");
-            throw new Exception(errorMessage);
-        }
-
-
-        SessionManager.setIdToken(json.get("idToken").asText());
-        return json.get("idToken").asText();
-    }
+    // ── Auth ─────────────────────────────────────────────────────────────────
 
     /**
-     * Step 2: Sends the ID token to your Spring Boot backend to verify
-     * and get back the full user profile.
+     * Register: backend creates Firebase Auth account + Firestore profile + returns JWT.
+     * Stores the JWT in SessionManager and returns the user node.
      */
-    public JsonNode verifyWithSpring(String idToken) throws Exception {
-        String body = String.format("{\"idToken\":\"%s\"}", idToken);
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BACKEND_VERIFY_URL))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(body))
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request,
-                HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() != 200) {
-            throw new Exception("Backend verification failed");
-        }
-
-        JsonNode user = mapper.readTree(response.body());
-
-        // store in session
-        SessionManager.login(user.path("id").asText(),
-                user.path("fullName").asText(),
-                user.path("role").asText(),
-                user.path("email").asText()
-        );
-
-        return user;
-    }
-
-    // Get all assignments for a user
-    public JsonNode getAssignments(String userId, String idToken) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/assignments/user/" + userId))
-                .header("Authorization", "Bearer " + idToken)
-                .GET().build();
-
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() != 200) {
-            throw new Exception("Failed to load assignments");
-        }
-        return mapper.readTree(response.body());
-    }
-
-    // Mark an assignment complete
-    public void markAssignmentComplete(String assignmentId, String idToken) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/assignments/" + assignmentId + "/complete"))
-                .header("Authorization", "Bearer " + idToken)
-                .method("PATCH", HttpRequest.BodyPublishers.noBody()).build();
-
-        httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-    }
-
-    public JsonNode getGpaSummary(String userId, String idToken) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/gpa/summary/" + userId))
-                .header("Authorization", "Bearer " + idToken)
-                .GET()
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request,
-                HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() != 200) {
-            throw new Exception("Failed to load GPA summary");
-        }
-        return mapper.readTree(response.body());
-    }
-
-    public void register(String fullName, String email, String password, String role) throws Exception {
+    public JsonNode register(String fullName, String email, String password, String role) throws Exception {
+        String safeName = fullName.replace("\\", "\\\\").replace("\"", "\\\"");
         String body = String.format(
-                "{\"fullName\":\"%s\",\"email\":\"%s\",\"password\":\"%s\",\"role\":\"%s\"}",
-                fullName, email, password, role
-        );
+            "{\"fullName\":\"%s\",\"email\":\"%s\",\"password\":\"%s\",\"role\":\"%s\"}",
+            safeName, email, password, role);
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/auth/register"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(body))
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request,
-                HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = post("/api/auth/register", body, null);
+        System.out.println("[Auth] register status=" + response.statusCode());
+        System.out.println("[Auth] register body=" + response.body());
 
         if (response.statusCode() != 201) {
-            JsonNode error = mapper.readTree(response.body());
-            throw new Exception(error.path("message").asText("Registration failed"));
+            JsonNode err = mapper.readTree(response.body());
+            String msg = err.path("message").asText(err.path("error").asText("Registration failed"));
+            throw new Exception(msg);
         }
+
+        JsonNode result = mapper.readTree(response.body());
+        storeSession(result);
+        return result.path("user");
+    }
+
+    /**
+     * Login: backend verifies password and returns JWT.
+     * Stores the JWT in SessionManager and returns the user node.
+     */
+    public JsonNode login(String email, String password) throws Exception {
+        String body = String.format(
+            "{\"email\":\"%s\",\"password\":\"%s\"}", email, password);
+
+        HttpResponse<String> response = post("/api/auth/login", body, null);
+        System.out.println("[Auth] login status=" + response.statusCode());
+        System.out.println("[Auth] login body=" + response.body());
+
+        if (response.statusCode() != 200) {
+            JsonNode err = mapper.readTree(response.body());
+            String msg = err.path("message").asText(err.path("error").asText("Invalid email or password"));
+            throw new Exception(msg);
+        }
+
+        JsonNode result = mapper.readTree(response.body());
+        storeSession(result);
+        return result.path("user");
+    }
+
+    private void storeSession(JsonNode result) {
+        String token = result.path("token").asText("");
+        JsonNode user = result.path("user");
+        SessionManager.setIdToken(token);
+        SessionManager.login(
+            user.path("id").asText(),
+            user.path("fullName").asText(),
+            user.path("role").asText(),
+            user.path("email").asText()
+        );
+    }
+
+    // ── Courses ──────────────────────────────────────────────────────────────
+
+    public JsonNode getCourses(String userId, String token) throws Exception {
+        HttpResponse<String> r = get("/api/courses/user/" + userId, token);
+        if (r.statusCode() != 200) throw new Exception("Failed to load courses");
+        return mapper.readTree(r.body());
     }
 
     public JsonNode createCourse(String courseName, String courseCode,
-                                 String semester, int credits, String idToken) throws Exception {
+                                 String semester, int credits, String token) throws Exception {
         String body = String.format(
-                "{\"courseName\":\"%s\",\"courseCode\":\"%s\",\"semester\":\"%s\",\"credits\":%d}",
-                courseName, courseCode, semester, credits
-        );
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/courses"))
-                .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer " + idToken)
-                .POST(HttpRequest.BodyPublishers.ofString(body))
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request,
-                HttpResponse.BodyHandlers.ofString());
-
-        System.out.println("Create course response: " + response.statusCode() + " " + response.body());
-        if (response.statusCode() != 200 && response.statusCode() != 201) {
-            JsonNode error = mapper.readTree(response.body());
-            throw new Exception(error.path("message").asText("Failed to create course"));
+            "{\"courseName\":\"%s\",\"courseCode\":\"%s\",\"semester\":\"%s\",\"credits\":%d}",
+            courseName, courseCode, semester, credits);
+        HttpResponse<String> r = post("/api/courses", body, token);
+        if (r.statusCode() != 200 && r.statusCode() != 201) {
+            JsonNode err = mapper.readTree(r.body());
+            throw new Exception(err.path("message").asText("Failed to create course"));
         }
-        return mapper.readTree(response.body());
+        return mapper.readTree(r.body());
     }
 
-    //Note logic
-    public JsonNode getNotes(String userId, String idToken) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/notes/user/" + userId))
-                .header("Authorization", "Bearer " + idToken)
-                .GET().build();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() != 200) throw new Exception("Failed to load notes");
-        return mapper.readTree(response.body());
+    // ── Assignments ──────────────────────────────────────────────────────────
+
+    public JsonNode getAssignments(String userId, String token) throws Exception {
+        HttpResponse<String> r = get("/api/assignments/user/" + userId, token);
+        if (r.statusCode() != 200) throw new Exception("Failed to load assignments");
+        return mapper.readTree(r.body());
     }
 
-    public JsonNode saveNote(String noteId, String title, String content, String idToken) throws Exception {
-        String body = String.format("{\"title\":\"%s\",\"content\":\"%s\"}",
-                title.replace("\"", "\\\""), content.replace("\"", "\\\"").replace("\n", "\\n"));
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/notes" + (noteId.isEmpty() ? "" : "/" + noteId)))
-                .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer " + idToken)
-                .method(noteId.isEmpty() ? "POST" : "PUT", HttpRequest.BodyPublishers.ofString(body))
-                .build();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() != 200 && response.statusCode() != 201) throw new Exception("Failed to save note");
-        return mapper.readTree(response.body());
-    }
-
-    public void deleteNote(String noteId, String idToken) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/notes/" + noteId))
-                .header("Authorization", "Bearer " + idToken)
-                .DELETE().build();
-        httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    public void markAssignmentComplete(String assignmentId, String token) throws Exception {
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create(BASE + "/api/assignments/" + assignmentId + "/complete"))
+                .header("Authorization", "Bearer " + token)
+                .method("PATCH", HttpRequest.BodyPublishers.noBody()).build();
+        httpClient.send(req, HttpResponse.BodyHandlers.ofString());
     }
 
     public JsonNode createAssignment(String title, String courseId,
-                                     String dueDate, String idToken) throws Exception {
+                                     String dueDate, String token) throws Exception {
         String body = String.format(
-                "{\"title\":\"%s\",\"courseId\":\"%s\",\"dueDate\":\"%s\",\"priority\":\"MEDIUM\",\"description\":\"\"}",
-                title, courseId, dueDate);
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/assignments"))
-                .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer " + idToken)
-                .POST(HttpRequest.BodyPublishers.ofString(body)).build();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() != 200 && response.statusCode() != 201)
+            "{\"title\":\"%s\",\"courseId\":\"%s\",\"dueDate\":\"%s\",\"priority\":\"MEDIUM\",\"description\":\"\"}",
+            title, courseId, dueDate);
+        HttpResponse<String> r = post("/api/assignments", body, token);
+        if (r.statusCode() != 200 && r.statusCode() != 201)
             throw new Exception("Failed to create assignment");
-        return mapper.readTree(response.body());
+        return mapper.readTree(r.body());
+    }
+
+    // ── Grades / GPA ─────────────────────────────────────────────────────────
+
+    public JsonNode getGpaSummary(String userId, String token) throws Exception {
+        HttpResponse<String> r = get("/api/gpa/summary/" + userId, token);
+        if (r.statusCode() != 200) throw new Exception("Failed to load GPA summary");
+        return mapper.readTree(r.body());
+    }
+
+    public JsonNode getGradeRecords(String userId, String token) throws Exception {
+        HttpResponse<String> r = get("/api/gpa/records/" + userId, token);
+        if (r.statusCode() != 200) throw new Exception("Failed to load grade records");
+        return mapper.readTree(r.body());
     }
 
     public JsonNode addGradeRecord(String courseId, String letterGrade,
-                                   double gradePoints, String idToken) throws Exception {
+                                   double gradePoints, String token) throws Exception {
         String body = String.format(
-                "{\"courseId\":\"%s\",\"letterGrade\":\"%s\",\"gradePoints\":%.1f}",
-                courseId, letterGrade, gradePoints);
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/gpa/records"))
-                .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer " + idToken)
-                .POST(HttpRequest.BodyPublishers.ofString(body)).build();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() != 200 && response.statusCode() != 201)
+            "{\"courseId\":\"%s\",\"letterGrade\":\"%s\",\"gradePoints\":%.1f}",
+            courseId, letterGrade, gradePoints);
+        HttpResponse<String> r = post("/api/gpa/records", body, token);
+        if (r.statusCode() != 200 && r.statusCode() != 201)
             throw new Exception("Failed to save grade");
-        return mapper.readTree(response.body());
+        return mapper.readTree(r.body());
     }
 
-    public JsonNode getCourses(String userId, String idToken) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/courses/user/" + userId))
-                .header("Authorization", "Bearer " + idToken)
-                .GET().build();
-        HttpResponse<String> response = httpClient.send(request,
-                HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() != 200) throw new Exception("Failed to load courses");
-        return mapper.readTree(response.body());
+    // ── Notes ────────────────────────────────────────────────────────────────
+
+    public JsonNode getNotes(String userId, String token) throws Exception {
+        HttpResponse<String> r = get("/api/notes/user/" + userId, token);
+        if (r.statusCode() != 200) throw new Exception("Failed to load notes");
+        return mapper.readTree(r.body());
     }
 
+    public JsonNode saveNote(String noteId, String title, String content, String token) throws Exception {
+        String safeTitle   = title.replace("\\", "\\\\").replace("\"", "\\\"");
+        String safeContent = content.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n");
+        String body = String.format("{\"title\":\"%s\",\"content\":\"%s\"}", safeTitle, safeContent);
+        boolean isNew = noteId.isEmpty();
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create(BASE + "/api/notes" + (isNew ? "" : "/" + noteId)))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + token)
+                .method(isNew ? "POST" : "PUT", HttpRequest.BodyPublishers.ofString(body))
+                .build();
+        HttpResponse<String> r = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
+        if (r.statusCode() != 200 && r.statusCode() != 201) throw new Exception("Failed to save note");
+        return mapper.readTree(r.body());
+    }
+
+    public void deleteNote(String noteId, String token) throws Exception {
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create(BASE + "/api/notes/" + noteId))
+                .header("Authorization", "Bearer " + token)
+                .DELETE().build();
+        httpClient.send(req, HttpResponse.BodyHandlers.ofString());
+    }
+
+    // ── HTTP helpers ─────────────────────────────────────────────────────────
+
+    private HttpResponse<String> get(String path, String token) throws Exception {
+        HttpRequest.Builder b = HttpRequest.newBuilder()
+                .uri(URI.create(BASE + path))
+                .GET();
+        if (token != null) b.header("Authorization", "Bearer " + token);
+        return httpClient.send(b.build(), HttpResponse.BodyHandlers.ofString());
+    }
+
+    private HttpResponse<String> post(String path, String body, String token) throws Exception {
+        HttpRequest.Builder b = HttpRequest.newBuilder()
+                .uri(URI.create(BASE + path))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body));
+        if (token != null) b.header("Authorization", "Bearer " + token);
+        return httpClient.send(b.build(), HttpResponse.BodyHandlers.ofString());
+    }
 }
