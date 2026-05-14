@@ -27,10 +27,11 @@ The Login Screen will appear.
 Enter your email and password to log in.
 New users can create an account using the Register button
 
-   <img width="1856" height="1344" alt="login" src="https://github.com/user-attachments/assets/76f1406f-ed9f-4b24-9dd2-99a0e9da94f6" />
+<img width="400" height="400" alt="Desktop 2026-05-14 4-35-21 PM" src="https://github.com/user-attachments/assets/cae98a88-875c-4e2a-b029-519339424e27" />
+
+<img width="400" height="400" alt="Desktop 2026-05-14 4-37-41 PM" src="https://github.com/user-attachments/assets/45d21ab0-e1eb-4cbc-b751-a89415e107fc" />
 
 
-   Dashboard<img width="2142" height="1884" alt="Dashboard" src="https://github.com/user-attachments/assets/e22d26fb-1826-4293-b6bf-6b5acc860bba" />
 
    After logging in, users are redirected to the Dashboard.
    
