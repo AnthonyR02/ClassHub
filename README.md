@@ -83,6 +83,8 @@ Features
 •	View tasks by date 
 •	Improve time management 
 •	Organize academic planning 
+•	Automatically assign study sessions
+
 Steps
 1.	Open the Calendar section. 
 2.	Review scheduled assignments and upcoming events. 
