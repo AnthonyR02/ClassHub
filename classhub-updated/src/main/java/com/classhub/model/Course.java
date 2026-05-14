@@ -9,7 +9,6 @@ public class Course {
     private String semester;
     private String userId;      // student enrolled in the course
     private String teacherId;   // teacher who created/owns the course
-
     public Course() {}
 
     public Course(String id, String courseCode, String courseName,

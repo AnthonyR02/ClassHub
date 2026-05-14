@@ -322,9 +322,14 @@ public class Dashboard {
             boolean[] mf = {true, true, true, true, true};
             applyDays(daySelected, dayBtns, mf);
         });
+        Label resetBtn = quickPickLabel("Reset");
+        resetBtn.setOnMouseClicked(e -> {
+           boolean[] reset = {false, false, false, false, false};
+           applyDays(daySelected, dayBtns, reset);
+        });
         quickRow.getChildren().addAll(new Label("Quick:") {{
             setStyle("-fx-font-size:11px;-fx-font-family:'Segoe UI';-fx-text-fill:" + TEXT3 + ";");
-        }}, mwfBtn, tthBtn, mfBtn);
+        }}, mwfBtn, tthBtn, mfBtn,  resetBtn);
 
         Label errorLbl = new Label("");
         errorLbl.setStyle("-fx-text-fill:" + ROSE + ";-fx-font-size:11px;-fx-font-family:'Segoe UI';");
