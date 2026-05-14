@@ -112,6 +112,26 @@ Steps
 2.	Add grades for completed assignments or courses. 
 3.	GPA information will automatically update on the dashboard
 
+   The Flashcards feature helps students study important concepts and prepare for quizzes or exams more efficiently.
+   
+
+https://github.com/user-attachments/assets/4344c693-47e3-48f9-8f88-9d30d559d252
+
+
+Features
+
+1 Create custom flashcards
+2 Add questions and answers
+3 Review study materials quickly
+4 Organize flashcards by subject or topic
+
+Steps
+Open the Flashcards section.
+Click the New Deck button.
+Add a deck name and subject.
+Click Create Deck.
+Save the flashcards and review them anytime.
+
 Logout
 To safely exit the application:
 1.	Click the Logout button in the sidebar. 
